@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr"><head>
+<html lang="fr">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VIBES</title>
@@ -919,15 +920,15 @@ body[data-grain="none"]::before{display:none}
 <style id="theme-vars"></style>
 </head>
 <body class="at-top" data-cart="0" data-hdr="dark">
-<svg width="0" height="0" aria-hidden="" focusable="false" style="position:absolute;left:-9999px">
+<svg width="0" height="0" aria-hidden focusable="false" style="position:absolute;left:-9999px">
   <symbol id="vmark" viewBox="0 0 955 475">
-    <rect width="955" height="475" fill="var(--pl, transparent)"></rect>
+    <rect width="955" height="475" fill="var(--pl, transparent)"/>
     <g fill="none" stroke="var(--mk, currentColor)" stroke-linejoin="miter" stroke-miterlimit="12">
-      <path d="M330 45L477.5 400L625 45" stroke-width="38"></path>
-      <path d="M377.2 45L477.5 286.4L577.8 45" stroke-width="25.8"></path>
-      <path d="M409.3 45L477.5 209.2L545.7 45" stroke-width="17.6"></path>
-      <path d="M431.1 45L477.5 156.6L523.9 45" stroke-width="11.9"></path>
-      <path d="M446 45L477.5 120.9L509 45" stroke-width="8.1"></path>
+      <path d="M330 45L477.5 400L625 45" stroke-width="38"/>
+      <path d="M377.2 45L477.5 286.4L577.8 45" stroke-width="25.8"/>
+      <path d="M409.3 45L477.5 209.2L545.7 45" stroke-width="17.6"/>
+      <path d="M431.1 45L477.5 156.6L523.9 45" stroke-width="11.9"/>
+      <path d="M446 45L477.5 120.9L509 45" stroke-width="8.1"/>
     </g>
   </symbol>
 </svg>
@@ -1012,9 +1013,9 @@ body[data-grain="none"]::before{display:none}
   "founded": 2024,
   "tagline": "",
   "eggHint": true,
-  "version": 4,
-  "lastEditor": "Anatole Gronier",
-  "lastSaved": "2026-08-18T13:28:25.199Z"
+  "version": 1,
+  "lastEditor": "",
+  "lastSaved": ""
  },
  "theme": {
   "bg": "#0a0a0b",
@@ -1970,14 +1971,16 @@ body[data-grain="none"]::before{display:none}
  ],
  "themePresets": [],
  "sync": {
+  "provider": "github",
+  "owner": "vibes-neoma",
+  "repo": "vibes-site",
+  "branch": "main",
+  "path": "vibes-data.json",
   "getUrl": "",
   "putUrl": "",
   "method": "PUT",
   "headerName": "",
-  "headerPrefix": "",
-  "provider": "github",
-  "owner": "vibes-neoma",
-  "repo": "vibes-site"
+  "headerPrefix": ""
  }
 }</script>
 <script>
@@ -4464,4 +4467,6 @@ render();
   if (/(^|#|&)edition/.test(location.hash)) enterEdit();
 })();
 
-</script></body></html>
+</script>
+</body>
+</html>
