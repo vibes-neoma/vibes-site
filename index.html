@@ -909,6 +909,149 @@ body[data-grain="none"]::before{display:none}
   .ed-gate .bx{width:100%}
 }
 
+/* ── éléments libres ─────────────────────────────────────── */
+#app [data-blk] { position: relative; }
+.fel-layer { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+.fel {
+  position: absolute; pointer-events: auto; display: flex; align-items: center;
+  box-sizing: border-box; max-width: 100%; text-decoration: none; color: inherit;
+}
+.fel > * { display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 100%; }
+.fel-btn {
+  background: var(--btn-bg, var(--accent)); color: var(--accent-ink, #0a0a0a);
+  border-radius: var(--btn-radius, 999px); padding: 14px 24px; font-weight: 600;
+  font-size: .86rem; letter-spacing: .01em; transition: transform .25s, filter .25s;
+}
+a.fel:hover .fel-btn { transform: translateY(-2px); filter: brightness(1.08); }
+.fel-banner {
+  background: var(--accent); color: var(--accent-ink); gap: 14px; padding: 13px 22px;
+  font-family: var(--font-mono); font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+}
+.fel-banner b { font-weight: 700; opacity: .72; }
+.fel-banner i { font-style: normal; opacity: .72; }
+.fel-title { font-family: var(--font-display); font-weight: 800; font-size: 2.4rem; line-height: 1.02; letter-spacing: -.02em; }
+.fel-text { font-size: .95rem; line-height: 1.6; display: block; }
+.fel-img { overflow: hidden; border-radius: inherit; }
+.fel-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fel-img.empty {
+  min-height: 90px; border: 1px dashed var(--line); color: var(--fg-muted);
+  font-size: .7rem; letter-spacing: .12em; text-transform: uppercase;
+}
+.fel-shape { background: var(--accent); width: 100%; height: 100%; min-height: 60px; }
+.fel-line { width: 100%; height: 0; }
+.fel-icon {
+  width: 100%; aspect-ratio: 1; border-radius: 50%; background: var(--accent);
+  color: var(--accent-ink); font-weight: 700; font-size: 1.1rem;
+}
+.fel-embed { width: 100%; aspect-ratio: 16/9; }
+.fel-embed iframe { width: 100%; height: 100%; border: 0; display: block; border-radius: inherit; }
+
+/* ── affordances d'édition ───────────────────────────────── */
+.ed-live .fel { outline: 1px dashed color-mix(in srgb, var(--fg) 30%, transparent); cursor: grab; }
+.ed-live .fel:hover, .ed-live .fel[data-sel] { outline: 1.5px solid var(--accent); }
+.ed-live .fel[data-fel-off="1"] { opacity: .35; }
+.ed-live .fel[data-drag] { cursor: grabbing; outline: 1.5px solid var(--accent); }
+.fel-h, .fel-rz { display: none; }
+.ed-live .fel-h {
+  display: block; position: absolute; top: -9px; left: -9px; width: 16px; height: 16px;
+  border-radius: 50%; background: var(--accent); border: 2px solid #0a0a0a; cursor: move; z-index: 3;
+}
+.ed-live .fel-rz {
+  display: block; position: absolute; width: 13px; height: 13px; background: #fff;
+  border: 2px solid var(--accent); right: -7px; bottom: -7px; cursor: nwse-resize; z-index: 3; border-radius: 2px;
+}
+.ed-live .fel-rz.w { top: 50%; right: -7px; bottom: auto; margin-top: -6px; cursor: ew-resize; }
+.ed-live .fel-rz.s { left: 50%; bottom: -7px; right: auto; margin-left: -6px; cursor: ns-resize; }
+
+/* poignée de déplacement des textes */
+.ed-live [data-edit] { position: relative; }
+.ed-live [data-edit]:hover { outline: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 3px; }
+.ed-live [data-edit].tx-moving { outline: 1.5px solid var(--accent); }
+.tx-grip {
+  position: absolute; width: 20px; height: 20px; border-radius: 6px; z-index: 60;
+  background: var(--accent); color: #0a0a0a; display: grid; place-items: center;
+  font-size: 11px; cursor: move; box-shadow: 0 3px 10px rgba(0, 0, 0, .4); user-select: none;
+}
+.tx-grip.res { cursor: ew-resize; background: #fff; border: 2px solid var(--accent); }
+
+/* menu contextuel */
+.ctx {
+  position: fixed; z-index: 400; min-width: 226px; max-height: 78vh; overflow: auto;
+  background: #101010; border: 1px solid #2a2a2a; border-radius: 12px; padding: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .6); font-family: var(--font-body); color: #f2f2f2;
+}
+.ctx button {
+  display: flex; width: 100%; gap: 10px; align-items: center; justify-content: space-between;
+  background: none; border: 0; color: inherit; text-align: left; padding: 8px 10px;
+  border-radius: 8px; font-size: .78rem; cursor: pointer;
+}
+.ctx button:hover { background: #1e1e1e; }
+.ctx button.d { color: #ff8080; }
+.ctx hr { border: 0; border-top: 1px solid #262626; margin: 5px 2px; }
+.ctx .h { font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: #8a8a8a; padding: 8px 10px 4px; }
+.ctx .rowin { display: flex; gap: 6px; padding: 4px 8px 8px; }
+.ctx .rowin button { justify-content: center; background: #1b1b1b; padding: 7px 0; }
+
+/* rogner une image */
+.crop { position: fixed; inset: 0; z-index: 500; background: rgba(0, 0, 0, .88); display: grid; place-items: center; }
+.crop .bx { width: min(940px, 94vw); background: #0e0e0e; border: 1px solid #2a2a2a; border-radius: 16px; padding: 20px; }
+.crop .stage { position: relative; overflow: hidden; background: #000; border-radius: 10px; display: grid; place-items: center; }
+.crop .stage img { max-width: 100%; max-height: 62vh; display: block; user-select: none; }
+.crop .sel { position: absolute; border: 2px solid #ffd400; box-shadow: 0 0 0 9999px rgba(0, 0, 0, .58); cursor: move; }
+.crop .sel i { position: absolute; width: 14px; height: 14px; background: #ffd400; border-radius: 3px; }
+.crop .sel i.nw { left: -8px; top: -8px; cursor: nwse-resize; }
+.crop .sel i.ne { right: -8px; top: -8px; cursor: nesw-resize; }
+.crop .sel i.sw { left: -8px; bottom: -8px; cursor: nesw-resize; }
+.crop .sel i.se { right: -8px; bottom: -8px; cursor: nwse-resize; }
+.crop .bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+.crop .bar .sp { margin-left: auto; }
+
+/* barre d'outils flottante du bloc sélectionné */
+.blkbar {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 18px; z-index: 300;
+  display: flex; gap: 4px; background: #101010; border: 1px solid #2a2a2a;
+  border-radius: 12px; padding: 5px; box-shadow: 0 18px 44px rgba(0, 0, 0, .55);
+}
+.blkbar button {
+  background: #1b1b1b; border: 0; color: #f0f0f0; font-size: .72rem; padding: 8px 12px;
+  border-radius: 8px; cursor: pointer; white-space: nowrap;
+}
+.blkbar button:hover { background: #2b2b2b; }
+.blkbar button.p { background: var(--accent); color: #0a0a0a; font-weight: 600; }
+.blkbar .nm { font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: #8a8a8a; padding: 8px 10px; }
+@media (max-width: 700px) { .blkbar { bottom: 70px; max-width: 94vw; overflow: auto; } }
+
+/* ── apparition des éléments libres ──────────────────────── */
+.fel[data-rv] > * { transition: transform .8s cubic-bezier(.16, 1, .3, 1), filter .8s; }
+.fel[data-rv="up"] > * { transform: translateY(34px); }
+.fel[data-rv="down"] > * { transform: translateY(-34px); }
+.fel[data-rv="left"] > * { transform: translateX(-40px); }
+.fel[data-rv="right"] > * { transform: translateX(40px); }
+.fel[data-rv="zoom"] > * { transform: scale(.86); }
+.fel[data-rv="rotate"] > * { transform: rotate(-6deg) scale(.94); }
+.fel[data-rv="flip"] > * { transform: perspective(700px) rotateX(28deg); }
+.fel[data-rv="blur"] > * { filter: blur(9px); }
+.fel[data-rv].in > * { transform: none; filter: none; }
+
+/* ── replis du panneau ───────────────────────────────────── */
+.ed-grp { border-top: 1px solid #262626; margin: 0 -14px; padding: 0 14px; }
+.ed-grp > summary {
+  cursor: pointer; list-style: none; padding: 12px 2px; font-size: .7rem;
+  letter-spacing: .16em; text-transform: uppercase; color: #b9b7b2; display: flex;
+  align-items: center; justify-content: space-between; user-select: none;
+}
+.ed-grp > summary::-webkit-details-marker { display: none; }
+.ed-grp > summary::after { content: "+"; font-size: 1rem; color: #7d7b77; }
+.ed-grp[open] > summary::after { content: "–"; }
+.ed-grp[open] > summary { color: var(--accent, #ffd400); }
+.ed-grp > div { padding-bottom: 14px; }
+.ed-panel input[type=range] { accent-color: var(--accent, #ffd400); height: 22px; padding: 0; background: none; border: 0; }
+
+/* ── texte transformé en lien ────────────────────────────── */
+a.tx-link { color: inherit; text-decoration: none; display: contents; }
+a.tx-link:hover [data-edit] { text-decoration: underline; text-underline-offset: .18em; }
+.ed-live .tx-has-link { box-shadow: inset 0 -2px 0 var(--accent); }
+
 
 .ed-live [data-edit]:empty::before{content:attr(data-ph);color:var(--fg-muted);opacity:.55}
 .ed-live [data-edit][data-ph]:empty{min-width:120px;display:inline-block}
@@ -962,6 +1105,23 @@ body[data-grain="none"]::before{display:none}
   <div class="cart-ft" id="cartFt"></div>
 </aside>
 
+<div class="egg" id="egg" data-on="0" role="dialog" aria-modal="true" aria-labelledby="eggT">
+  <div class="bx">
+    <span class="sh" aria-hidden="true"></span>
+    <span class="egg-badge"><span class="d"></span>Code débloqué</span>
+    <h2 class="d2" id="eggT" style="margin:18px 0 6px">Bien vu.</h2>
+    <p class="small muted" style="margin:0">Code caché trouvé. Il donne <b id="eggPct">10 %</b> sur toute la boutique.</p>
+    <div class="code" id="eggCode">NOLIMIT10</div>
+    <p class="idx" style="justify-content:center">Valable sur la prochaine commande</p>
+    <div class="row" style="justify-content:center;margin-top:22px">
+      <button class="btn fill" id="eggCopy">Copier le code</button>
+      <button class="btn" id="eggShop">Voir la boutique</button>
+      <button class="btn" id="eggClose">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<template id="edShell">
 <button class="ed-fab" id="edFab" style="display:none"><span class="dot"></span>Éditer</button>
 
 <aside class="ed-panel" aria-label="Éditeur">
@@ -978,26 +1138,10 @@ body[data-grain="none"]::before{display:none}
   </div>
 </aside>
 
-<div class="egg" id="egg" data-on="0" role="dialog" aria-modal="true" aria-labelledby="eggT">
-  <div class="bx">
-    <span class="sh" aria-hidden="true"></span>
-    <span class="egg-badge"><span class="d"></span>Code débloqué</span>
-    <h2 class="d2" id="eggT" style="margin:18px 0 6px">Bien vu.</h2>
-    <p class="small muted" style="margin:0">Tu as trouvé le code caché. Il te donne <b id="eggPct">10 %</b> sur toute la boutique.</p>
-    <div class="code" id="eggCode">NOLIMIT10</div>
-    <p class="idx" style="justify-content:center">Valable sur ta prochaine commande</p>
-    <div class="row" style="justify-content:center;margin-top:22px">
-      <button class="btn fill" id="eggCopy">Copier le code</button>
-      <button class="btn" id="eggShop">Voir la boutique</button>
-      <button class="btn" id="eggClose">Fermer</button>
-    </div>
-  </div>
-</div>
-
 <div class="ed-gate" id="edGate" style="display:none">
   <div class="bx">
     <h3>Éditeur protégé</h3>
-    <p>Entre le code d’accès pour modifier le site.</p>
+    <p>Code d’accès requis pour modifier le site.</p>
     <div class="ed-f"><input id="edGateInput" type="password" placeholder="Code"></div>
     <p class="msg bad" id="edGateMsg" style="min-height:1em;margin:4px 0 12px"></p>
     <div class="ed-row"><button class="ed-b p" id="edGateOk">Entrer</button>
@@ -1006,16 +1150,17 @@ body[data-grain="none"]::before{display:none}
 </div>
 
 <div class="ed-toast" id="toast"></div>
+</template>
 
 <script id="site-data" type="application/json">{
  "meta": {
   "siteName": "VIBES",
   "founded": 2024,
-  "tagline": "",
-  "eggHint": true,
-  "version": 1,
-  "lastEditor": "",
-  "lastSaved": ""
+  "tagline": "NO LIMIT.\n",
+  "eggHint": false,
+  "version": 25,
+  "lastEditor": "Anatole Gronier",
+  "lastSaved": "2026-08-19T09:09:41.655Z"
  },
  "theme": {
   "bg": "#0a0a0b",
@@ -1029,30 +1174,30 @@ body[data-grain="none"]::before{display:none}
   "fontDisplay": "Archivo",
   "fontBody": "Inter",
   "fontMono": "JetBrains Mono",
-  "displayCase": "none",
-  "displayTracking": "-0.028em",
+  "displayCase": "uppercase",
+  "displayTracking": "-0.04em",
   "radius": "2px",
-  "grain": 0.5,
+  "grain": 0.35,
   "vignette": 0.45,
   "ruleWidth": "1px",
   "motion": 1,
-  "organic": 1,
-  "radiusLg": "22px",
+  "organic": 0,
+  "radiusLg": "0px",
   "ink": "#0a0a0a",
   "paper": "#f4f2ed",
   "yellow": "#ffd400",
   "yellowPale": "#fff3bd",
   "yellowDeep": "#c99400",
-  "scale": 1,
+  "scale": 1.15,
   "fsBase": 16,
   "lh": 1.65,
-  "headingWeight": 700,
+  "headingWeight": 900,
   "trackBody": "0em",
   "maxWidth": 1560,
   "density": 1,
   "idxWidth": 148,
   "headAlign": "left",
-  "btnRadius": "999px",
+  "btnRadius": "0px",
   "btnPadY": 14,
   "btnPadX": 22,
   "borderWidth": 1,
@@ -1061,14 +1206,15 @@ body[data-grain="none"]::before{display:none}
   "imgFilter": "none",
   "imgHover": "zoom",
   "imgHoverScale": 1.05,
-  "grainType": "fine",
-  "customCss": ""
+  "grainType": "lines",
+  "customCss": "",
+  "customFont": ""
  },
  "nav": [
   {
    "slug": "",
    "label": "Accueil",
-   "inNav": false
+   "inNav": true
   },
   {
    "slug": "actus",
@@ -1134,16 +1280,6 @@ body[data-grain="none"]::before{display:none}
        "tag": "",
        "text": "N.E.O VIBES sur Spotify, Apple Music et Deezer",
        "url": "#/sorties"
-      },
-      {
-       "tag": "Boutique",
-       "text": "Capsule S.I.N.S en série limitée",
-       "url": "#/shop"
-      },
-      {
-       "tag": "",
-       "text": "Tape le nom du label pour débloquer une remise",
-       "url": ""
       }
      ],
      "speed": 40
@@ -1155,9 +1291,9 @@ body[data-grain="none"]::before{display:none}
     "visible": true,
     "tone": "dark",
     "d": {
-     "eyebrow": "Label · Reims · depuis 2024",
+     "eyebrow": "ASSOCIATION · Reims · depuis 2024",
      "title": "Rap, beatmaking, média.",
-     "lede": "",
+     "lede": "NO LIMIT.",
      "narrow": true,
      "actions": [
       {
@@ -1395,6 +1531,45 @@ body[data-grain="none"]::before{display:none}
      "title": "",
      "limit": 100
     }
+   },
+   {
+    "id": "b5xg1rx",
+    "kind": "feature",
+    "visible": true,
+    "bg": "",
+    "d": {
+     "label": "",
+     "title": "",
+     "paragraphs": [],
+     "mediaId": "",
+     "ratio": "r43"
+    }
+   },
+   {
+    "id": "boaltbw",
+    "kind": "marquee",
+    "visible": true,
+    "bg": "",
+    "d": {
+     "items": [
+      "S . I . N . S : Un premier projet plein d'ambition !",
+      "4VRIL",
+      "GRIGRI",
+      "KIRA",
+      "SKII",
+      "MAZELKA",
+      "AKHAL",
+      "AVEC LA PARTICIPATON DE :",
+      "ROMAIN JAVARY",
+      "BRIDGE YABA GOUESSEY",
+      "CONSTANCE",
+      "CLARA TILLIER",
+      "SAFIA DERRAR",
+      "PEVE"
+     ]
+    },
+    "tone": "paper",
+    "narrow": false
    }
   ],
   "evenements": [
@@ -1482,8 +1657,8 @@ body[data-grain="none"]::before{display:none}
     "tone": "light",
     "d": {
      "eyebrow": "Contact",
-     "title": "",
-     "lede": "",
+     "title": "Contactez-nous...",
+     "lede": "Nous sommes constamment en recherche de nouveaux collaborateurs !",
      "narrow": true,
      "actions": []
     }
@@ -1494,8 +1669,8 @@ body[data-grain="none"]::before{display:none}
     "visible": true,
     "tone": "dark",
     "d": {
-     "label": "Écrire",
-     "title": "",
+     "label": "FICHE CONTACT",
+     "title": "...en répondant ici !",
      "subjects": [
       "Envoyer une démo",
       "Programmation",
@@ -1504,7 +1679,21 @@ body[data-grain="none"]::before{display:none}
       "Boutique",
       "Autre"
      ]
-    }
+    },
+    "narrow": false,
+    "noIdx": true
+   },
+   {
+    "id": "bwjuofn",
+    "kind": "newsletter",
+    "visible": true,
+    "bg": "",
+    "d": {
+     "label": "Ne",
+     "title": "Newsletter",
+     "text": "Sois au courant de nos dernières news !"
+    },
+    "noIdx": true
    }
   ],
   "shop": [
@@ -1515,7 +1704,7 @@ body[data-grain="none"]::before{display:none}
     "tone": "yellow",
     "d": {
      "eyebrow": "Boutique",
-     "title": "",
+     "title": "Bientôt disponible",
      "lede": "",
      "narrow": true,
      "actions": []
@@ -1524,12 +1713,14 @@ body[data-grain="none"]::before{display:none}
    {
     "id": "p2",
     "kind": "shopgrid",
-    "visible": true,
+    "visible": false,
     "tone": "light",
     "d": {
      "label": "Catalogue",
-     "title": ""
-    }
+     "title": "En travaux..."
+    },
+    "noIdx": true,
+    "align": "left"
    }
   ],
   "mentions": [
@@ -1540,8 +1731,8 @@ body[data-grain="none"]::before{display:none}
     "tone": "dark",
     "d": {
      "eyebrow": "Informations légales",
-     "title": "",
-     "lede": "",
+     "title": "VIBES est une association",
+     "lede": "D'après la loi 1901.",
      "narrow": true,
      "actions": []
     }
@@ -1566,8 +1757,8 @@ body[data-grain="none"]::before{display:none}
     "tone": "yellow",
     "d": {
      "eyebrow": "Actualités",
-     "title": "",
-     "lede": "",
+     "title": "Dernières news",
+     "lede": "Pour les infos en direct, suis nous sur instagram : @vibes.neomabs",
      "narrow": true,
      "actions": []
     }
@@ -1579,8 +1770,24 @@ body[data-grain="none"]::before{display:none}
     "tone": "light",
     "d": {
      "label": "Toutes les actus",
-     "title": "",
+     "title": "Une année productive !",
      "limit": 100
+    }
+   },
+   {
+    "id": "be1quet",
+    "kind": "feature",
+    "visible": true,
+    "bg": "",
+    "d": {
+     "label": "Revues D'ALBUM",
+     "title": "La fuite en avant :",
+     "paragraphs": [
+      "Un album qui n'a plus d'histoire à raconter ? (Par Léonard Goujon)",
+      "La Fuite en Avant reprend beaucoup de thèmes de Civilisation : les mêmes doutes, les mêmes observations sur le monde, les mêmes questionnements personnels. La phrase « Je suis toujours là » résume ce ressenti :une présence, mais peu d'évolution.                                                                                                                                                             Orelsan a toujours excellé dans l'art de raconter son quotidien, ses ambivalences, ses projets. Ici, la matière narrative est plus mince. Comme il le disait dans CF :« Et si, plus tard, on voulait connaitre mes histoires, combien vaudront vraiment la peine d'être racontées ? »Ce cinquième album semble affronter précisément cette question.                                                                                                                                         La \"fuite en avant\", c'est avancer parce qu'il faut avancer,pas parce qu'un nouveau chapitre est là.Dans l'album, cette idée apparaît par touches :« Demain j'aurai sûrement déjà tout oublié ». Une impression de mouvement, mais sans véritable bascule.                                                                                                                                                                   La Fuite en Avant n'est pas un mauvais album. C'est un projet qui s'inscrit davantage dans la continuité que dans la rupture. Un disque qui constate plus qu'il ne se réinvente, et qui pose finalement la question que l'artiste formulait déjà : quelles histoires valent encore la peine d'être racontées ? Encore une fois on revoit la même fuite, le même vide, le même problème. Orelsan est encore \"bloqué\"."
+     ],
+     "mediaId": "",
+     "ratio": "r34"
     }
    }
   ]
@@ -1632,14 +1839,6 @@ body[data-grain="none"]::before{display:none}
    "role": "",
    "photo": "",
    "url": "https://open.spotify.com/artist/1QhghSqt7gy0W4YeK6mGSt",
-   "visible": true
-  },
-  {
-   "id": "ar7",
-   "name": "Constance",
-   "role": "",
-   "photo": "",
-   "url": "https://open.spotify.com/artist/101NxipFkg3vlCV97aSAY4",
    "visible": true
   },
   {
@@ -1718,97 +1917,10 @@ body[data-grain="none"]::before{display:none}
    },
    "tracklist": [],
    "visible": true
-  },
-  {
-   "id": "r4",
-   "title": "OLD TOWN REIMS",
-   "kind": "Album",
-   "date": "",
-   "tracks": null,
-   "duration": "",
-   "copyright": "",
-   "cover": "",
-   "notes": "",
-   "links": {
-    "spotify": "https://open.spotify.com/album/5LZWHtcppkVK40PC7rldAL",
-    "apple": ""
-   },
-   "tracklist": [],
-   "visible": false
-  },
-  {
-   "id": "r5",
-   "title": "LE PULL",
-   "kind": "Album",
-   "date": "",
-   "tracks": null,
-   "duration": "",
-   "copyright": "",
-   "cover": "",
-   "notes": "",
-   "links": {
-    "spotify": "https://open.spotify.com/album/2CQ1ExdFYTEmZhqfMNqKdS",
-    "apple": ""
-   },
-   "tracklist": [],
-   "visible": false
   }
  ],
  "media": [],
- "products": [
-  {
-   "id": "pr1",
-   "name": "Hoodie oversize S.I.N.S",
-   "capsule": "Capsule S.I.N.S",
-   "price": 4500,
-   "description": "",
-   "images": [],
-   "sizes": [
-    "XS",
-    "S",
-    "M",
-    "L",
-    "XL"
-   ],
-   "soldOut": [],
-   "colors": [
-    "Noir",
-    "Jaune"
-   ],
-   "specs": [],
-   "payLink": "",
-   "gender": "unisexe",
-   "category": "sweatshirt",
-   "badge": "",
-   "visible": true
-  },
-  {
-   "id": "pr2",
-   "name": "T-shirt S.I.N.S",
-   "capsule": "Capsule S.I.N.S",
-   "price": 2500,
-   "description": "",
-   "images": [],
-   "sizes": [
-    "XS",
-    "S",
-    "M",
-    "L",
-    "XL"
-   ],
-   "soldOut": [],
-   "colors": [
-    "Noir",
-    "Blanc"
-   ],
-   "specs": [],
-   "payLink": "",
-   "gender": "unisexe",
-   "category": "top",
-   "badge": "",
-   "visible": true
-  }
- ],
+ "products": [],
  "links": [
   {
    "id": "k1",
@@ -1827,9 +1939,9 @@ body[data-grain="none"]::before{display:none}
   {
    "id": "k3",
    "label": "Deezer",
-   "url": "",
+   "url": "https://link.deezer.com/s/349LSPjfn5MDvy0VSrFZw",
    "group": "listen",
-   "visible": false
+   "visible": true
   },
   {
    "id": "k4",
@@ -1841,7 +1953,7 @@ body[data-grain="none"]::before{display:none}
   {
    "id": "k5",
    "label": "Instagram",
-   "url": "https://www.instagram.com/vibesneomabs",
+   "url": "https://www.instagram.com/vibes.neomabs",
    "group": "follow",
    "visible": true
   },
@@ -1854,10 +1966,10 @@ body[data-grain="none"]::before{display:none}
   }
  ],
  "contact": {
-  "general": "",
-  "demo": "",
-  "press": "",
-  "address": "",
+  "general": "vibesmusic.neoma@gmail.com",
+  "demo": "vibesmusic.neoma@gmail.com",
+  "press": "vibesmusic.neoma@gmail.com",
+  "address": "59 Rue Pierre Taittinger, 51100 Reims",
   "rna": "",
   "publisher": "",
   "host": ""
@@ -1865,35 +1977,8 @@ body[data-grain="none"]::before{display:none}
  "shop": {
   "currency": "€",
   "freeShipping": 7000,
-  "shipping": [
-   {
-    "id": "campus",
-    "name": "Retrait sur le campus",
-    "desc": "Remise en main propre lors d’une permanence ou d’un événement.",
-    "price": 0
-   },
-   {
-    "id": "relais",
-    "name": "Point relais",
-    "desc": "France métropolitaine, 3 à 5 jours ouvrés.",
-    "price": 290
-   },
-   {
-    "id": "home",
-    "name": "Livraison à domicile",
-    "desc": "France métropolitaine, 2 à 4 jours ouvrés.",
-    "price": 490
-   }
-  ],
-  "promos": [
-   {
-    "code": "NOLIMIT10",
-    "kind": "percent",
-    "value": 10,
-    "active": true,
-    "hidden": true
-   }
-  ]
+  "shipping": [],
+  "promos": []
  },
  "news": [
   {
@@ -1942,8 +2027,8 @@ body[data-grain="none"]::before{display:none}
    "id": "ed2",
    "name": "Anatole Gronier",
    "role": "editeur",
-   "salt": "d37ccc9b4a1d9efb",
-   "hash": "c8bf52e96076475e97eecb14df8220e4983a98d175e6ba1689c70cd4be87127b",
+   "salt": "e15d796131cdc783",
+   "hash": "2ca095b6d87ed1ea7266d39539008d04f24fe1052481d8b1a7b240c3d1773211",
    "active": true,
    "recSalt": "0dc76a4db81902bf",
    "recHash": "c3ff9c417d3fff284d1d955a37341fcf3958c73db3104e71f8f21bc98e1c6d54"
@@ -1971,16 +2056,14 @@ body[data-grain="none"]::before{display:none}
  ],
  "themePresets": [],
  "sync": {
-  "provider": "github",
-  "owner": "vibes-neoma",
-  "repo": "vibes-site",
-  "branch": "main",
-  "path": "vibes-data.json",
   "getUrl": "",
   "putUrl": "",
   "method": "PUT",
   "headerName": "",
-  "headerPrefix": ""
+  "headerPrefix": "",
+  "provider": "github",
+  "owner": "vibes-neoma",
+  "repo": "vibes-site"
  }
 }</script>
 <script>
@@ -2082,7 +2165,7 @@ function paintChrome() {
       <span>© ${new Date().getFullYear()} ${esc(D.meta.siteName)}${D.meta.founded ? ` — depuis ${D.meta.founded}` : ''}</span>
       <nav aria-label="Liens légaux" style="display:flex;gap:8px 22px;flex-wrap:wrap">
         <a href="#/mentions">Mentions légales</a>
-        ${D.meta.eggHint ? `<span class="hint-egg" title="Essaie">Tape le nom du label</span>` : ''}</nav>
+        ${D.meta.eggHint ? `<span class="hint-egg" title="Indice">Tapez le nom du label</span>` : ''}</nav>
     </div></div>`;
 }
 
@@ -2156,7 +2239,7 @@ function renderBlock(b, n, slug) {
           ${d.moreUrl ? `<a class="ulink" href="${esc(d.moreUrl)}">Toutes les actualités</a>` : ''}</div>
         ${list.length ? `<div class="news-grid${d.featureFirst === false ? '' : ' feat'}">${list.map(a => {
           const body = `<div class="ph">${a.image ? `<img src="${esc(a.image)}" alt="${esc(a.title)}" loading="lazy">`
-              : `<span class="slot" style="width:100%;height:100%;border:0">Visuel à ajouter</span>`}</div>
+              : (EDIT ? `<span class="slot" style="width:100%;height:100%;border:0">Visuel à ajouter</span>` : '')}</div>
             <div class="bd"><div class="mt">${a.tag ? `<span class="tag">${esc(a.tag)}</span>` : ''}
               ${a.date ? `<span class="dt">${esc(frDate(a.date) || a.date)}</span>` : ''}</div>
               <h3>${esc(a.title)}</h3>${a.excerpt ? `<p>${esc(a.excerpt)}</p>` : ''}
@@ -2164,7 +2247,7 @@ function renderBlock(b, n, slug) {
           return a.url ? `<a class="news-card" href="${esc(a.url)}"${/^https?:/.test(a.url) ? ' target="_blank" rel="noopener"' : ''}>${body}</a>`
                        : `<div class="news-card">${body}</div>`;
         }).join('')}</div>`
-        : `<div class="notice">Aucune actualité. Ouvre l’éditeur, onglet <b>Actus</b>, pour en publier.</div>`}
+        : (EDIT ? `<div class="notice">Aucune actualité publiée. Onglet <b>Actus</b> de l’éditeur.</div>` : '')}
         </div></div></section>`;
       break;
     }
@@ -2176,7 +2259,7 @@ function renderBlock(b, n, slug) {
         ${m ? `<div class="bgimg" data-px="0.08">${m.kind === 'video'
           ? `<video src="${esc(m.src)}" muted loop autoplay playsinline></video>`
           : `<img src="${esc(m.src)}" alt="${esc(m.alt || '')}">`}</div>`
-          : `<div class="bgimg"><span class="slot" style="width:100%;height:100%;border:0">Image plein écran à choisir dans les réglages</span></div>`}
+          : (EDIT ? `<div class="bgimg"><span class="slot" style="width:100%;height:100%;border:0">Image plein écran à choisir dans les réglages</span></div>` : '')}
         <div class="in"><div class="wrap">
           ${d.kicker ? `<span class="kick">${esc(d.kicker)}</span>` : ''}
           ${T(p + '.title', d.title, 'h2', 'd0', 'max-width:16ch', 'Titre')}
@@ -2228,7 +2311,7 @@ function renderBlock(b, n, slug) {
                          : `<div class="artist">${body}</div>`;
           }).join('')}
         </div><div class="rail-bar"><i></i></div></div>`
-        : `<div class="wrap"><p class="small muted">Rien à faire défiler pour l’instant.</p></div>`}
+        : (EDIT ? `<div class="wrap"><p class="small muted">Rien à faire défiler pour l’instant.</p></div>` : '')}
         </section>`;
       break;
     }
@@ -2268,11 +2351,11 @@ function renderBlock(b, n, slug) {
               data-gender="${esc(pr.gender || '')}" data-category="${esc(pr.category || '')}">
               ${pr.badge ? `<span class="badge">${esc(pr.badge)}</span>` : ''}
               <div class="fig r11">${(pr.images || [])[0] ? `<img src="${esc(pr.images[0])}" alt="${esc(pr.name)}" loading="lazy">`
-                : `<span class="slot" style="width:100%;height:100%">Visuel à ajouter</span>`}</div>
+                : (EDIT ? `<span class="slot" style="width:100%;height:100%">Visuel à ajouter</span>` : '')}</div>
               ${pr.capsule ? `<div class="idx" style="margin-top:13px">${esc(pr.capsule)}</div>` : ''}
               <div class="nm">${esc(pr.name)}</div>
               <div class="pz">${eur(pr.price)}</div></a>`).join('')}</div>`
-        : `<div class="notice">Aucun article. Ouvre l’éditeur, onglet <b>Boutique</b>, pour en ajouter.</div>`}
+        : (EDIT ? `<div class="notice">Aucun article. Onglet <b>Boutique</b> de l’éditeur.</div>` : '')}
         </div></div></section>`;
       break;
     }
@@ -2360,7 +2443,7 @@ function renderBlock(b, n, slug) {
         <div class="split">
           <figure><div class="fig ${d.ratio || 'r43'}">${m
             ? (m.kind === 'video' ? `<video src="${esc(m.src)}" controls playsinline></video>` : `<img src="${esc(m.src)}" alt="${esc(m.alt || '')}">`)
-            : `<span class="slot" style="width:100%;height:100%">Choisir une image dans les réglages</span>`}</div>
+            : (EDIT ? `<span class="slot" style="width:100%;height:100%">Choisir une image dans les réglages</span>` : '')}</div>
             ${m && m.credit ? `<figcaption>${esc(m.credit)}</figcaption>` : ''}</figure>
           <div class="stack">
             ${T(p + '.title', d.title, 'h2', 'd1', '', 'Titre')}
@@ -2381,7 +2464,7 @@ function renderBlock(b, n, slug) {
                 : `<img src="${esc(m.src)}" alt="${esc(m.alt || '')}" loading="lazy">`}</div>
             ${(m.title || m.credit) ? `<figcaption>${esc([m.title, m.credit].filter(Boolean).join(' — '))}</figcaption>` : ''}
           </figure>`).join('')}</div>`
-          : `<div class="notice">Aucune image pour l’instant. Ouvre l’éditeur, onglet <b>Médias</b>, et dépose tes photos.</div>`}
+          : (EDIT ? `<div class="notice">Aucune image dans cet album. Onglet <b>Médias</b> de l’éditeur.</div>` : '')}
         </div></div></section>`;
       break;
     }
@@ -2397,7 +2480,7 @@ function renderBlock(b, n, slug) {
             <span class="n">${String(j + 1).padStart(2, '0')}</span>
             <span class="ttl">${esc(r.title)}</span>
             <span class="meta">${esc([r.kind, frDate(r.date), r.tracks ? r.tracks + ' titres' : ''].filter(Boolean).join(' · '))}</span></a>`).join('')}</div>`
-          : `<p class="small muted">Aucune sortie affichée.</p>`}
+          : (EDIT ? `<p class="small muted">Aucune sortie affichée.</p>` : '')}
         </div></div></section>`;
       break;
     }
@@ -2416,7 +2499,7 @@ function renderBlock(b, n, slug) {
             <div class="nm">${esc(a.name)}</div>${a.role ? `<div class="rl">${esc(a.role)}</div>` : ''}`;
           return a.url ? `<a class="artist" href="${esc(a.url)}" target="_blank" rel="noopener">${body}</a>`
                        : `<div class="artist">${body}</div>`;
-        }).join('')}</div>` : `<p class="small muted">Aucun artiste affiché.</p>`}
+        }).join('')}</div>` : (EDIT ? `<p class="small muted">Aucun artiste affiché.</p>` : '')}
         </div></div></section>`;
       break;
     }
@@ -2430,11 +2513,11 @@ function renderBlock(b, n, slug) {
           <a class="ulink" href="#/shop">Toute la boutique</a></div>
         ${ps.length ? `<div class="cols c3">${ps.map(pr => `<a class="pcard" href="#/shop?p=${pr.id}">
             <div class="fig r11">${pr.images && pr.images[0] ? `<img src="${esc(pr.images[0])}" alt="${esc(pr.name)}" loading="lazy">`
-              : `<span class="slot" style="width:100%;height:100%">Visuel à ajouter</span>`}</div>
+              : (EDIT ? `<span class="slot" style="width:100%;height:100%">Visuel à ajouter</span>` : '')}</div>
             ${pr.capsule ? `<div class="idx" style="margin-top:13px">${esc(pr.capsule)}</div>` : ''}
             <div class="nm">${esc(pr.name)}</div>
             <div class="pz">${eur(pr.price)}</div></a>`).join('')}</div>`
-          : `<div class="notice">Aucun article. Ouvre l’éditeur, onglet <b>Boutique</b>, pour ajouter un produit.</div>`}
+          : (EDIT ? `<div class="notice">Aucun article. Onglet <b>Boutique</b> de l’éditeur.</div>` : '')}
         </div></div></section>`;
       break;
     }
@@ -2530,7 +2613,7 @@ function renderRelease(id) {
     <a class="ulink" href="#/sorties">← Discographie</a>
     <div class="split" style="margin-top:clamp(26px,4vw,54px)">
       <figure><div class="fig r11">${r.cover ? `<img src="${esc(r.cover)}" alt="Pochette de ${esc(r.title)}">`
-        : `<span class="slot" style="width:100%;height:100%">Pochette à ajouter</span>`}</div></figure>
+        : (EDIT ? `<span class="slot" style="width:100%;height:100%">Pochette à ajouter</span>` : '')}</div></figure>
       <div class="stack">
         <div><p class="idx">${esc([r.kind, frDate(r.date)].filter(Boolean).join(' · '))}</p>
           <h1 class="d1" style="margin-top:14px">${esc(r.title)}</h1></div>
@@ -2616,7 +2699,7 @@ function renderProduct(id) {
       <div class="stack" style="gap:12px;width:100%">
         <div class="fig r11" id="pdpMain" style="width:100%">${(p.images || [])[0]
           ? `<img src="${esc(p.images[0])}" alt="${esc(p.name)}">`
-          : `<span class="slot" style="width:100%;height:100%">Visuel à ajouter</span>`}</div>
+          : (EDIT ? `<span class="slot" style="width:100%;height:100%">Visuel à ajouter</span>` : '')}</div>
         ${(p.images || []).length > 1 ? `<div class="cols c4" style="gap:10px;width:100%">
           ${p.images.slice(0, 4).map((s, i) => `<div class="fig r11" data-img="${i}" style="cursor:pointer"><img src="${esc(s)}" alt=""></div>`).join('')}</div>` : ''}
       </div>
@@ -2753,7 +2836,7 @@ function renderCheckout() {
     const to = D.contact.general || '';
     const body = `Référence : ${ref}%0D%0A%0D%0A${encodeURIComponent($('#con').value)}%0D%0A${encodeURIComponent($('#com').value)}%0D%0A${encodeURIComponent($('#cop').value)}%0D%0A%0D%0AARTICLES%0D%0A${lines}%0D%0A%0D%0A${promoCode ? 'REMISE : ' + promoCode + ' -' + eur(discount) + '%0D%0A' : ''}LIVRAISON : ${encodeURIComponent(s.name)} — ${sc === 0 ? 'offerte' : eur(sc)}%0D%0AADRESSE : ${encodeURIComponent(addr)}%0D%0A%0D%0ATOTAL : ${eur(total)}%0D%0A%0D%0A${encodeURIComponent($('#cot').value)}`;
     $('#coOut').className = 'msg ok';
-    $('#coOut').textContent = to ? `Commande ${ref} prête — ta messagerie s’ouvre.` : `Commande ${ref} : aucune adresse de contact n’est renseignée dans l’éditeur.`;
+    $('#coOut').textContent = to ? `Commande ${ref} prête — la messagerie s’ouvre.` : `Commande ${ref} enregistrée. Aucune adresse de contact n’est disponible pour l’envoi.`;
     if (to) window.location.href = `mailto:${to}?subject=Commande%20${ref}&body=${body}`;
     CART = []; paintCart();
   };
@@ -2767,7 +2850,7 @@ function bindForms() {
     e.preventDefault();
     const to = D.contact.general || D.contact.demo;
     const out = $('#ctOut');
-    if (!to) { out.className = 'msg bad'; out.textContent = 'Aucune adresse de contact renseignée dans l’éditeur.'; return; }
+    if (!to) { out.className = 'msg bad'; out.textContent = 'Aucune adresse de contact n’est disponible pour le moment.'; return; }
     const sub = encodeURIComponent(`[${$('#cts').value}] ${$('#ctn').value}`);
     const body = encodeURIComponent(`${$('#ctx').value}\n\n${$('#ctl').value ? 'Lien : ' + $('#ctl').value + '\n' : ''}Contact : ${$('#ctm').value}`);
     out.className = 'msg ok'; out.textContent = 'Ta messagerie s’ouvre pour l’envoi.';
@@ -2778,7 +2861,7 @@ function bindForms() {
     e.preventDefault();
     const to = D.contact.general;
     const out = $('#nlOut');
-    if (!to) { out.className = 'msg bad'; out.textContent = 'Aucune adresse de contact renseignée dans l’éditeur.'; return; }
+    if (!to) { out.className = 'msg bad'; out.textContent = 'Aucune adresse de contact n’est disponible pour le moment.'; return; }
     out.className = 'msg ok'; out.textContent = 'Ta messagerie s’ouvre pour confirmer.';
     window.location.href = `mailto:${to}?subject=${encodeURIComponent('Inscription newsletter')}&body=${encodeURIComponent($('#nlMail').value)}`;
   };
@@ -2970,7 +3053,7 @@ function bindEgg() {
   $('#egg').addEventListener('click', e => { if (e.target.id === 'egg') $('#egg').dataset.on = '0'; });
   $('#eggCopy').onclick = async () => {
     try { await navigator.clipboard.writeText(EGG_CODE); $('#eggCopy').textContent = 'Copié'; }
-    catch { $('#eggCopy').textContent = 'Sélectionne le code'; }
+    catch { $('#eggCopy').textContent = 'Copie manuelle du code'; }
     setTimeout(() => $('#eggCopy').textContent = 'Copier le code', 1900);
   };
   $('#eggShop').onclick = () => { $('#egg').dataset.on = '0'; location.hash = '#/shop'; };
@@ -3169,6 +3252,803 @@ function setupMobileEntry() {
   });
 }
 
+/* ════════════════════════════════════════════════════════════
+   MISE EN PAGE LIBRE
+   Styles par bloc, retouches par texte, éléments libres
+   (boutons, bandeaux, images, formes) posés où l'on veut.
+   ════════════════════════════════════════════════════════════ */
+
+const FEL = {
+  button: 'Bouton', banner: 'Bandeau', text: 'Texte libre', title: 'Titre libre',
+  image: 'Image', shape: 'Forme', line: 'Filet', icon: 'Pastille', embed: 'Vidéo intégrée'
+};
+const ANIMS = [['', 'Aucune'], ['up', 'Monte'], ['down', 'Descend'], ['left', 'Vient de la gauche'],
+  ['right', 'Vient de la droite'], ['zoom', 'Zoom'], ['fade', 'Fondu'], ['blur', 'Net progressif'],
+  ['rotate', 'Pivote'], ['flip', 'Bascule']];
+const BLEND = ['normal', 'multiply', 'screen', 'overlay', 'soft-light', 'hard-light', 'difference', 'exclusion', 'luminosity', 'color-dodge'];
+const FILTERS = [['', 'Aucun'], ['grayscale(1)', 'Noir et blanc'], ['sepia(.55)', 'Sépia'],
+  ['contrast(1.25) saturate(.85)', 'Contrasté'], ['saturate(1.5)', 'Saturé'], ['brightness(1.15)', 'Éclairci'],
+  ['brightness(.8)', 'Assombri'], ['blur(3px)', 'Flou'], ['invert(1)', 'Négatif'],
+  ['contrast(1.4) grayscale(1)', 'Noir et blanc dur']];
+const SHAPES = [['rect', 'Rectangle'], ['circle', 'Cercle'], ['pill', 'Gélule'], ['diamond', 'Losange'],
+  ['tri', 'Triangle'], ['blob', 'Tache organique']];
+
+/* ── outils ──────────────────────────────────────────────── */
+const px = v => (v == null || v === '' ? '' : (/[a-z%)]$/i.test(String(v)) ? String(v) : Number(v) + 'px'));
+const nb = (v, d) => (v == null || v === '' || isNaN(Number(v)) ? d : Number(v));
+const cssId = s => String(s).replace(/[^a-zA-Z0-9_-]/g, '');
+
+function mediaSrc(idOrUrl) {
+  if (!idOrUrl) return '';
+  const m = (D.media || []).find(x => x.id === idOrUrl);
+  return m ? m.src : idOrUrl;
+}
+
+/* ── styles d'un bloc ────────────────────────────────────── */
+function blockCss(b) {
+  const s = b.st || {};
+  const S = `#app [data-blk="${cssId(b.id)}"]`;
+  const out = [];
+  const V = [];
+
+  if (s.bg) V.push(`--bg:${s.bg}`);
+  if (s.fg) { V.push(`--fg:${s.fg}`); V.push(`--fg-muted:color-mix(in srgb,${s.fg} 58%,transparent)`); }
+  if (s.accent) { V.push(`--accent:${s.accent}`); V.push(`--btn-bg:${s.accent}`); }
+  if (s.line) V.push(`--line:${s.line}`);
+  if (s.maxw) V.push(`--maxw:${nb(s.maxw, 1560)}px`);
+  if (s.idxw != null && s.idxw !== '') V.push(`--idx-w:${nb(s.idxw, 148)}px`);
+  if (s.pad) V.push(`--density:${nb(s.pad, 1)}`);
+  if (s.radius != null && s.radius !== '') V.push(`--radius:${px(s.radius)}`);
+  if (s.btnRadius) V.push(`--btn-radius:${px(s.btnRadius)}`);
+
+  const P = [];
+  if (s.bg) P.push(`background-color:${s.bg}`);
+  if (s.fg) P.push(`color:${s.fg}`);
+  if (s.padT !== undefined && s.padT !== '') P.push(`padding-top:${px(s.padT)}`);
+  if (s.padB !== undefined && s.padB !== '') P.push(`padding-bottom:${px(s.padB)}`);
+  if (s.minH) P.push(`min-height:${nb(s.minH, 0)}vh`);
+  if (s.minH) P.push(`display:flex;flex-direction:column;justify-content:${s.vAlign || 'center'}`);
+  if (s.mt) P.push(`margin-top:${px(s.mt)}`);
+  if (s.mb) P.push(`margin-bottom:${px(s.mb)}`);
+  if (s.mx) P.push(`margin-left:${px(s.mx)};margin-right:${px(s.mx)}`);
+  if (s.round) P.push(`border-radius:${px(s.round)};overflow:hidden`);
+  if (s.bw) P.push(`border:${nb(s.bw, 1)}px solid ${s.bc || 'var(--line)'}`);
+  if (s.noRule) P.push(`border-top:0`);
+  if (s.ruleW) P.push(`border-top-width:${px(s.ruleW)}`);
+  if (s.ruleC) P.push(`border-top-color:${s.ruleC}`);
+  if (s.shadow) P.push(`box-shadow:0 ${nb(s.shadow, 20)}px ${nb(s.shadow, 20) * 2.4}px rgba(0,0,0,${Math.min(.7, nb(s.shadowA, .3))})`);
+  if (s.blend && s.blend !== 'normal') P.push(`mix-blend-mode:${s.blend}`);
+  if (s.op != null && s.op !== '' && Number(s.op) !== 1) P.push(`opacity:${nb(s.op, 1)}`);
+  if (s.rot) P.push(`transform:rotate(${nb(s.rot, 0)}deg)`);
+  if (s.z) P.push(`position:relative;z-index:${nb(s.z, 1)}`);
+  if (s.skew) P.push(`transform:skewY(${nb(s.skew, 0)}deg)`);
+  if (s.sticky) P.push(`position:sticky;top:var(--hdr);z-index:20`);
+
+  if (V.length || P.length) out.push(`${S}{${V.concat(P).join(';')}}`);
+
+  /* image de fond */
+  const bgi = mediaSrc(s.bgImg);
+  if (bgi) {
+    out.push(`${S}{position:relative;isolation:isolate}`);
+    out.push(`${S}::before{content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;
+      background-image:url("${bgi}");background-size:${s.bgSize || 'cover'};
+      background-position:${s.bgPos || 'center'};background-repeat:${s.bgRepeat ? 'repeat' : 'no-repeat'};
+      ${s.bgFixed ? 'background-attachment:fixed;' : ''}
+      opacity:${nb(s.bgOp, 1)};filter:${[s.bgBlur ? `blur(${nb(s.bgBlur, 0)}px)` : '', s.bgFilter || ''].filter(Boolean).join(' ') || 'none'}}`);
+  }
+  if (s.ovColor && nb(s.ovOp, 0) > 0) {
+    out.push(`${S}{position:relative;isolation:isolate}`);
+    out.push(`${S}::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+      background:${s.ovGrad ? `linear-gradient(${nb(s.ovAngle, 180)}deg, transparent, ${s.ovColor})` : s.ovColor};
+      opacity:${nb(s.ovOp, .5)};mix-blend-mode:${s.ovBlend || 'normal'}}`);
+  }
+
+  /* typographie du bloc */
+  const t = [];
+  if (s.fs) t.push(`font-size:calc(1rem * ${nb(s.fs, 1)})`);
+  if (s.font) t.push(`font-family:${stack(s.font)}`);
+  if (s.lh) t.push(`line-height:${nb(s.lh, 1.6)}`);
+  if (s.ls) t.push(`letter-spacing:${nb(s.ls, 0)}em`);
+  if (s.align) t.push(`text-align:${s.align}`);
+  if (t.length) out.push(`${S} .band-in > *:last-child, ${S} .wrap{${t.join(';')}}`);
+
+  if (s.titleFont || s.titleFs || s.titleFw || s.titleCase || s.titleLs || s.titleColor) {
+    const h = [];
+    if (s.titleFont) h.push(`font-family:${stack(s.titleFont)}`);
+    if (s.titleFs) h.push(`font-size:calc(1em * ${nb(s.titleFs, 1)})`);
+    if (s.titleFw) h.push(`font-weight:${nb(s.titleFw, 700)}`);
+    if (s.titleCase) h.push(`text-transform:${s.titleCase}`);
+    if (s.titleLs) h.push(`letter-spacing:${nb(s.titleLs, 0)}em`);
+    if (s.titleColor) h.push(`color:${s.titleColor}`);
+    out.push(`${S} h1,${S} h2,${S} h3,${S} .d0,${S} .d1,${S} .d2,${S} .d3{${h.join(';')}}`);
+  }
+  if (s.imgFilter) out.push(`${S} .fig img,${S} .fig video,${S} figure img{filter:${s.imgFilter}}`);
+  if (s.imgRound != null && s.imgRound !== '') out.push(`${S} .fig{border-radius:${px(s.imgRound)}}`);
+  if (s.cols) out.push(`${S} .cols{grid-template-columns:repeat(${nb(s.cols, 3)},minmax(0,1fr))}`);
+  if (s.gap) out.push(`${S} .cols,${S} .pgrid,${S} .news-grid,${S} .rail{gap:${px(s.gap)}}`);
+  if (s.hideM) out.push(`@media(max-width:820px){${S}{display:none!important}}`);
+  if (s.hideD) out.push(`@media(min-width:821px){${S}{display:none!important}}`);
+  if (s.noIdxCol) out.push(`${S} .band-in{grid-template-columns:minmax(0,1fr)}${S} .band-idx{display:none}`);
+  if (s.css) out.push(String(s.css).replace(/(^|\})\s*([^@}{]+)\{/g, (m, a, selr) =>
+    `${a} ${selr.split(',').map(x => x.trim() === ':bloc' || x.trim() === '&' ? S : `${S} ${x.trim()}`).join(',')}{`));
+
+  /* retouches texte par texte */
+  for (const [path, o] of Object.entries(b.tx || {})) {
+    if (!o) continue;
+    const q = `${S} [data-edit="${String(path).replace(/"/g, '')}"]`;
+    const r = [];
+    if (o.dx || o.dy || o.rot) r.push(`transform:translate(${nb(o.dx, 0)}px,${nb(o.dy, 0)}px) rotate(${nb(o.rot, 0)}deg)`);
+    if (o.w) r.push(`max-width:${nb(o.w, 100)}%;width:${nb(o.w, 100)}%`);
+    if (o.fs) r.push(`font-size:calc(1em * ${nb(o.fs, 1)})`);
+    if (o.fw) r.push(`font-weight:${nb(o.fw, 400)}`);
+    if (o.ls != null && o.ls !== '') r.push(`letter-spacing:${nb(o.ls, 0)}em`);
+    if (o.lh) r.push(`line-height:${nb(o.lh, 1.4)}`);
+    if (o.color) r.push(`color:${o.color}`);
+    if (o.bg) r.push(`background:${o.bg};padding:.2em .5em;display:inline-block`);
+    if (o.font) r.push(`font-family:${stack(o.font)}`);
+    if (o.align) r.push(`text-align:${o.align};display:block`);
+    if (o.case) r.push(`text-transform:${o.case}`);
+    if (o.italic) r.push(`font-style:italic`);
+    if (o.under) r.push(`text-decoration:underline;text-underline-offset:.18em`);
+    if (o.stroke) r.push(`-webkit-text-stroke:${nb(o.strokeW, 1)}px ${o.stroke};color:transparent`);
+    if (o.shadow) r.push(`text-shadow:0 ${nb(o.shadow, 4)}px ${nb(o.shadow, 4) * 2}px rgba(0,0,0,.45)`);
+    if (o.op != null && o.op !== '' && Number(o.op) !== 1) r.push(`opacity:${nb(o.op, 1)}`);
+    if (o.mt) r.push(`margin-top:${px(o.mt)}`);
+    if (o.mb) r.push(`margin-bottom:${px(o.mb)}`);
+    if (o.hide && !EDIT) r.push(`display:none`);
+    if (r.length) out.push(`${q}{${r.join(';')}}`);
+    if (o.hideM) out.push(`@media(max-width:820px){${q}{display:none}}`);
+  }
+  return out.join('\n');
+}
+
+/* ── éléments libres ─────────────────────────────────────── */
+function felCss(b, e) {
+  const S = `#app [data-blk="${cssId(b.id)}"] [data-fel="${cssId(e.id)}"]`;
+  const p = [];
+  p.push(`left:${nb(e.x, 50)}%`);
+  p.push(`top:${nb(e.y, 50)}%`);
+  if (e.full) { p.push(`left:0`); p.push(`width:100%`); }
+  else if (e.w) p.push(`width:${nb(e.w, 20)}%`);
+  if (e.h) p.push(`height:${nb(e.h, 0)}px`);
+  if (e.z) p.push(`z-index:${nb(e.z, 5)}`);
+  const tr = [];
+  if (e.rot) tr.push(`rotate(${nb(e.rot, 0)}deg)`);
+  if (e.scale && Number(e.scale) !== 1) tr.push(`scale(${nb(e.scale, 1)})`);
+  if (tr.length) p.push(`transform:${tr.join(' ')}`);
+  if (e.op != null && e.op !== '' && Number(e.op) !== 1) p.push(`opacity:${nb(e.op, 1)}`);
+  if (e.blend && e.blend !== 'normal') p.push(`mix-blend-mode:${e.blend}`);
+  const out = [`${S}{${p.join(';')}}`];
+
+  const i = [];
+  if (e.bg) i.push(`background:${e.bg}`);
+  if (e.fg) i.push(`color:${e.fg}`);
+  if (e.bw) i.push(`border:${nb(e.bw, 1)}px ${e.bstyle || 'solid'} ${e.bc || 'currentColor'}`);
+  if (e.r != null && e.r !== '') i.push(`border-radius:${px(e.r)}`);
+  if (e.py != null && e.py !== '') i.push(`padding-top:${px(e.py)};padding-bottom:${px(e.py)}`);
+  if (e.px != null && e.px !== '') i.push(`padding-left:${px(e.px)};padding-right:${px(e.px)}`);
+  if (e.fs) i.push(`font-size:${nb(e.fs, 1)}rem`);
+  if (e.fw) i.push(`font-weight:${nb(e.fw, 600)}`);
+  if (e.font) i.push(`font-family:${stack(e.font)}`);
+  if (e.ls != null && e.ls !== '') i.push(`letter-spacing:${nb(e.ls, 0)}em`);
+  if (e.lh) i.push(`line-height:${nb(e.lh, 1.4)}`);
+  if (e.case) i.push(`text-transform:${e.case}`);
+  if (e.al) i.push(`text-align:${e.al};justify-content:${e.al === 'center' ? 'center' : e.al === 'right' ? 'flex-end' : 'flex-start'}`);
+  if (e.shadow) i.push(`box-shadow:0 ${nb(e.shadow, 10)}px ${nb(e.shadow, 10) * 2.2}px rgba(0,0,0,${Math.min(.75, nb(e.shadowA, .3))})`);
+  if (e.blur) i.push(`backdrop-filter:blur(${nb(e.blur, 8)}px)`);
+  if (e.filter) i.push(`filter:${e.filter}`);
+  if (e.h) i.push(`height:100%`);
+  if (i.length) out.push(`${S} > *{${i.join(';')}}`);
+  if (e.hideM) out.push(`@media(max-width:820px){${S}{display:none}}`);
+  if (e.hideD) out.push(`@media(min-width:821px){${S}{display:none}}`);
+  if (e.css) out.push(`${S}{${e.css}}`);
+  return out.join('\n');
+}
+
+function felInner(e) {
+  const lab = esc(e.label || '');
+  switch (e.type) {
+    case 'button':
+      return `<span class="fel-btn">${lab || (EDIT ? 'Bouton' : '')}</span>`;
+    case 'banner':
+      return `<span class="fel-banner">${e.kicker ? `<b>${esc(e.kicker)}</b>` : ''}<span>${lab}</span>
+        ${e.label2 ? `<i>${esc(e.label2)}</i>` : ''}</span>`;
+    case 'title':
+      return `<span class="fel-title">${lab}</span>`;
+    case 'text':
+      return `<span class="fel-text">${String(e.text || e.label || '').split('\n').map(l => esc(l)).join('<br>')}</span>`;
+    case 'image': {
+      const src = mediaSrc(e.src);
+      return src ? `<span class="fel-img"><img src="${esc(src)}" alt="${esc(e.alt || '')}"
+        style="object-fit:${e.fit || 'cover'};object-position:${e.pos || 'center'}"></span>`
+        : `<span class="fel-img empty">${EDIT ? 'Image à choisir' : ''}</span>`;
+    }
+    case 'shape': {
+      const sh = e.shape || 'rect';
+      const clip = sh === 'diamond' ? 'polygon(50% 0,100% 50%,50% 100%,0 50%)'
+        : sh === 'tri' ? 'polygon(50% 0,100% 100%,0 100%)'
+        : sh === 'blob' ? 'none' : 'none';
+      const rad = sh === 'circle' ? '50%' : sh === 'pill' ? '999px'
+        : sh === 'blob' ? '58% 42% 39% 61% / 47% 55% 45% 53%' : '';
+      return `<span class="fel-shape" style="${clip !== 'none' ? `clip-path:${clip};` : ''}${rad ? `border-radius:${rad};` : ''}"></span>`;
+    }
+    case 'line':
+      return `<span class="fel-line" style="border-top:${nb(e.bw, 2)}px ${e.bstyle || 'solid'} ${e.bc || 'currentColor'}"></span>`;
+    case 'icon':
+      return `<span class="fel-icon">${lab || '★'}</span>`;
+    case 'embed': {
+      const u = String(e.href || '');
+      const yt = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{6,})/);
+      const src = yt ? `https://www.youtube.com/embed/${yt[1]}` : u;
+      return src ? `<span class="fel-embed"><iframe src="${esc(src)}" loading="lazy" allowfullscreen
+        title="${esc(e.label || 'Vidéo')}"></iframe></span>` : `<span class="fel-img empty">${EDIT ? 'Adresse de la vidéo' : ''}</span>`;
+    }
+  }
+  return '';
+}
+
+function felHtml(b, e) {
+  if (!e.visible && !EDIT) return '';
+  const inner = felInner(e);
+  const at = `data-fel="${esc(e.id)}" data-fel-type="${esc(e.type)}"${e.visible ? '' : ' data-fel-off="1"'}`
+    + (e.anim ? ` data-rv="${esc(e.anim)}"` : '');
+  const linkable = ['button', 'banner', 'image', 'text', 'title', 'icon'].includes(e.type);
+  if (linkable && e.href && !EDIT) {
+    const ext = /^https?:/.test(e.href);
+    return `<a class="fel" ${at} href="${esc(e.href)}"${ext ? ' target="_blank" rel="noopener"' : ''}>${inner}</a>`;
+  }
+  return `<div class="fel" ${at}>${inner}${EDIT ? `<span class="fel-h" data-fel-grip></span>
+    <span class="fel-rz" data-fel-rz="se"></span><span class="fel-rz w" data-fel-rz="e"></span>
+    <span class="fel-rz s" data-fel-rz="s"></span>` : ''}</div>`;
+}
+
+/* ── passe finale après rendu ────────────────────────────── */
+function decorate(slug) {
+  const css = [];
+  const blocks = D.pages[slug] || [];
+  const byId = {}; blocks.forEach(b => byId[b.id] = b);
+  $$('#app [data-blk]').forEach(node => {
+    const b = byId[node.dataset.blk];
+    if (!b) return;
+    if (b.st && b.st.anchor) node.id = cssId(b.st.anchor);
+    css.push(blockCss(b));
+    /* Un texte auquel on a donné une adresse devient un vrai lien. */
+    for (const [path, o] of Object.entries(b.tx || {})) {
+      if (!o || !o.href) continue;
+      const el = node.querySelector(`[data-edit="${CSS.escape ? path.replace(/"/g, '') : path}"]`);
+      if (!el || el.parentElement.classList.contains('tx-link')) continue;
+      if (EDIT) { el.classList.add('tx-has-link'); el.title = 'Lien : ' + o.href; continue; }
+      const a = document.createElement('a');
+      a.className = 'tx-link';
+      a.href = o.href;
+      if (/^https?:/.test(o.href)) { a.target = '_blank'; a.rel = 'noopener'; }
+      el.parentNode.insertBefore(a, el);
+      a.appendChild(el);
+    }
+    const els = (b.els || []);
+    if (els.length || EDIT) {
+      const layer = document.createElement('div');
+      layer.className = 'fel-layer';
+      layer.innerHTML = els.map(e => { css.push(felCss(b, e)); return felHtml(b, e); }).join('');
+      node.appendChild(layer);
+      node.classList.add('has-fel');
+    }
+  });
+  let sheet = $('#blk-css');
+  if (!sheet) { sheet = document.createElement('style'); sheet.id = 'blk-css'; document.head.appendChild(sheet); }
+  sheet.textContent = css.filter(Boolean).join('\n');
+}
+
+/* ════════════════════════════════════════════════════════════
+   MANIPULATION DIRECTE
+   Déplacer un texte à la souris, redimensionner un bloc,
+   poser des boutons et des bandeaux, rogner une image.
+   Tout cela n'existe qu'en mode édition.
+   ════════════════════════════════════════════════════════════ */
+
+let SEL_BLOCK = null;          // bloc sélectionné
+let SEL_FEL = null;            // élément libre sélectionné
+
+const blkOf = id => (D.pages[currentSlug()] || []).find(b => b.id === id);
+const blkNode = el => el.closest('[data-blk]');
+function txOf(b, path) { b.tx = b.tx || {}; return (b.tx[path] = b.tx[path] || {}); }
+function felOf(b, id) { return (b.els || []).find(e => e.id === id); }
+
+/* ── création d'un élément libre ─────────────────────────── */
+function newFel(type) {
+  const base = { id: uid('e'), type, visible: true, x: 34, y: 40, w: 0, z: 6, op: 1, anim: '' };
+  const P = {
+    button: { label: 'En savoir plus', href: '', w: 0 },
+    banner: { label: 'Nouvelle sortie disponible', kicker: 'À la une', full: true, x: 0, y: 0, w: 100 },
+    title: { label: 'Un titre libre', w: 46, fs: 2.6, fw: 800 },
+    text: { text: 'Un texte que l’on place où l’on veut.', w: 34, fs: .95 },
+    image: { src: '', w: 26, r: 12 },
+    shape: { shape: 'circle', w: 16, h: 0, bg: '', op: .9, z: 1 },
+    line: { w: 30, bw: 2 },
+    icon: { label: '★', w: 7 },
+    embed: { href: '', w: 44 }
+  };
+  return Object.assign(base, P[type] || {});
+}
+function addFel(b, type) {
+  const e = newFel(type);
+  (b.els = b.els || []).push(e);
+  setDirty(true); render();
+  SEL_FEL = { blk: b.id, el: e.id };
+  openFelPanel(b.id, e.id);
+  return e;
+}
+
+/* ── glisser / redimensionner les éléments libres ────────── */
+function bindFelDrag() {
+  $$('#app .fel').forEach(fel => {
+    fel.addEventListener('pointerdown', ev => {
+      if (!EDIT || ev.button !== 0) return;
+      const rz = ev.target.closest('[data-fel-rz]');
+      const node = blkNode(fel); if (!node) return;
+      const b = blkOf(node.dataset.blk); if (!b) return;
+      const e = felOf(b, fel.dataset.fel); if (!e) return;
+      ev.preventDefault(); ev.stopPropagation();
+      SEL_FEL = { blk: b.id, el: e.id };
+      $$('#app .fel[data-sel]').forEach(x => x.removeAttribute('data-sel'));
+      fel.setAttribute('data-sel', '1');
+
+      const R = node.getBoundingClientRect();
+      const F = fel.getBoundingClientRect();
+      const mode = rz ? rz.dataset.felRz : 'move';
+      const ox = ev.clientX - F.left, oy = ev.clientY - F.top;
+      const startW = F.width, startH = F.height, sx = ev.clientX, sy = ev.clientY;
+      fel.setAttribute('data-drag', '1');
+      fel.setPointerCapture(ev.pointerId);
+
+      const move = m => {
+        if (mode === 'move') {
+          let nx = (m.clientX - ox - R.left) / R.width * 100;
+          let ny = (m.clientY - oy - R.top) / R.height * 100;
+          if (m.shiftKey) { nx = Math.round(nx / 5) * 5; ny = Math.round(ny / 5) * 5; }
+          e.x = Math.round(Math.max(-20, Math.min(115, nx)) * 10) / 10;
+          e.y = Math.round(Math.max(-20, Math.min(115, ny)) * 10) / 10;
+          if (e.full) e.x = 0;
+          fel.style.left = e.x + '%'; fel.style.top = e.y + '%';
+        } else {
+          if (mode === 'se' || mode === 'e') {
+            const w = Math.max(24, startW + (m.clientX - sx));
+            e.w = Math.round(w / R.width * 1000) / 10;
+            fel.style.width = e.w + '%';
+          }
+          if (mode === 'se' || mode === 's') {
+            const h = Math.max(16, startH + (m.clientY - sy));
+            e.h = Math.round(h);
+            fel.style.height = e.h + 'px';
+            const kid = fel.firstElementChild; if (kid) kid.style.height = '100%';
+          }
+        }
+      };
+      const up = () => {
+        fel.removeEventListener('pointermove', move);
+        fel.removeEventListener('pointerup', up);
+        fel.removeAttribute('data-drag');
+        setDirty(true); render(); openFelPanel(b.id, e.id);
+      };
+      fel.addEventListener('pointermove', move);
+      fel.addEventListener('pointerup', up);
+    });
+  });
+}
+
+/* ── glisser un texte dans n'importe quelle direction ─────── */
+let GRIP = null, GRIP_R = null, TXT_TARGET = null;
+function placeGrips(el) {
+  TXT_TARGET = el;
+  clearTimeout(GRIP._t);
+  const r = el.getBoundingClientRect();
+  GRIP.style.display = GRIP_R.style.display = 'grid';
+  GRIP.style.left = Math.max(2, r.left - 26) + 'px';
+  GRIP.style.top = (r.top + 2) + 'px';
+  GRIP_R.style.left = Math.min(innerWidth - 26, r.right + 8) + 'px';
+  GRIP_R.style.top = (r.top + 2) + 'px';
+  GRIP._el = GRIP_R._el = el;
+}
+/** Un court délai laisse le temps d'atteindre la pastille sans qu'elle disparaisse. */
+function hideGrips() {
+  if (!GRIP) return;
+  clearTimeout(GRIP._t);
+  GRIP._t = setTimeout(() => {
+    if (GRIP._busy || GRIP._hover) return;
+    GRIP.style.display = GRIP_R.style.display = 'none';
+    TXT_TARGET = null;
+  }, 260);
+}
+function bindTextDrag() {
+  if (!EDIT) return;
+  if (!GRIP) {
+    GRIP = document.createElement('div'); GRIP.className = 'tx-grip'; GRIP.textContent = '✥';
+    GRIP.title = 'Déplacer ce texte, dans toutes les directions. Maj : pas de 8 px. Alt : horizontal seulement.';
+    GRIP_R = document.createElement('div'); GRIP_R.className = 'tx-grip res'; GRIP_R.textContent = '↔';
+    GRIP_R.title = 'Changer la largeur de ce texte.';
+    document.body.append(GRIP, GRIP_R);
+    GRIP.style.display = GRIP_R.style.display = 'none';
+    startGrip(GRIP, 'move');
+    startGrip(GRIP_R, 'width');
+    [GRIP, GRIP_R].forEach(g => {
+      g.addEventListener('pointerenter', () => { GRIP._hover = true; clearTimeout(GRIP._t); });
+      g.addEventListener('pointerleave', () => { GRIP._hover = false; hideGrips(); });
+    });
+    $('#app').addEventListener('pointerleave', hideGrips);
+    addEventListener('scroll', () => { if (TXT_TARGET && !GRIP._busy) placeGrips(TXT_TARGET); }, { passive: true });
+  }
+  $$('#app [data-edit]').forEach(el => el.addEventListener('pointerenter', () => placeGrips(el)));
+}
+function startGrip(g, mode) {
+  g.addEventListener('pointerdown', ev => {
+    const el = g._el; if (!el) return;
+    ev.preventDefault(); ev.stopPropagation();
+    const node = blkNode(el); const b = node && blkOf(node.dataset.blk);
+    if (!b) return;
+    const o = txOf(b, el.dataset.edit);
+    const sx = ev.clientX, sy = ev.clientY;
+    const dx0 = nb(o.dx, 0), dy0 = nb(o.dy, 0);
+    const R = node.getBoundingClientRect();
+    const w0 = el.getBoundingClientRect().width;
+    g._busy = true; el.classList.add('tx-moving');
+    g.setPointerCapture(ev.pointerId);
+    const move = m => {
+      if (mode === 'move') {
+        let ddx = dx0 + (m.clientX - sx), ddy = dy0 + (m.clientY - sy);
+        if (m.shiftKey) { ddx = Math.round(ddx / 8) * 8; ddy = Math.round(ddy / 8) * 8; }
+        if (m.altKey) ddy = dy0;
+        o.dx = Math.round(ddx); o.dy = Math.round(ddy);
+        el.style.transform = `translate(${o.dx}px,${o.dy}px) rotate(${nb(o.rot, 0)}deg)`;
+        g.style.left = (m.clientX - 10) + 'px';
+        g.style.top = (m.clientY - 10) + 'px';
+      } else {
+        const w = Math.max(60, w0 + (m.clientX - sx));
+        o.w = Math.round(w / R.width * 1000) / 10;
+        el.style.width = el.style.maxWidth = o.w + '%';
+        g.style.left = Math.min(innerWidth - 26, m.clientX + 8) + 'px';
+      }
+    };
+    const up = () => {
+      g.removeEventListener('pointermove', move); g.removeEventListener('pointerup', up);
+      g._busy = false; el.classList.remove('tx-moving');
+      setDirty(true); render();
+    };
+    g.addEventListener('pointermove', move);
+    g.addEventListener('pointerup', up);
+  });
+}
+
+/* ── menu au clic droit ──────────────────────────────────── */
+function closeCtx() { const c = $('.ctx'); if (c) c.remove(); }
+addEventListener('pointerdown', e => { if (!e.target.closest('.ctx')) closeCtx(); }, true);
+addEventListener('keydown', e => { if (e.key === 'Escape') closeCtx(); });
+
+function ctxMenu(x, y, groups) {
+  closeCtx();
+  const c = document.createElement('div');
+  c.className = 'ctx';
+  c.innerHTML = groups.map(g => {
+    if (g.title) return `<div class="h">${esc(g.title)}</div>`;
+    if (g.sep) return '<hr>';
+    if (g.row) return `<div class="rowin">${g.row.map((r, i) => `<button data-i="${g._i0 + i}">${esc(r.label)}</button>`).join('')}</div>`;
+    return `<button data-i="${g._i}"${g.danger ? ' class="d"' : ''}>${esc(g.label)}${g.note ? `<span style="opacity:.5">${esc(g.note)}</span>` : ''}</button>`;
+  }).join('');
+  document.body.appendChild(c);
+  const r = c.getBoundingClientRect();
+  c.style.left = Math.min(x, innerWidth - r.width - 10) + 'px';
+  c.style.top = Math.min(y, innerHeight - r.height - 10) + 'px';
+  c.querySelectorAll('button').forEach(bt => bt.onclick = () => {
+    const fn = ACTIONS[Number(bt.dataset.i)];
+    closeCtx(); if (fn) fn();
+  });
+}
+let ACTIONS = [];
+function menu(items) {
+  ACTIONS = [];
+  const out = [];
+  for (const it of items) {
+    if (it.title || it.sep) { out.push(it); continue; }
+    if (it.row) { const i0 = ACTIONS.length; it.row.forEach(r => ACTIONS.push(r.do)); out.push({ row: it.row, _i0: i0 }); continue; }
+    out.push({ label: it.label, note: it.note, danger: it.danger, _i: ACTIONS.length });
+    ACTIONS.push(it.do);
+  }
+  return out;
+}
+
+function openCtxFor(target, x, y) {
+  const fel = target.closest('.fel');
+  const txt = target.closest('[data-edit]');
+  const node = target.closest('[data-blk]');
+  if (!node) return false;
+  const b = blkOf(node.dataset.blk); if (!b) return false;
+  SEL_BLOCK = node.dataset.blk;
+  if (fel) ctxMenu(x, y, menu(felMenu(b, felOf(b, fel.dataset.fel))));
+  else if (txt) ctxMenu(x, y, menu(textMenu(b, txt)));
+  else ctxMenu(x, y, menu(blockMenu(b)));
+  return true;
+}
+function bindCtx() {
+  const app = $('#app');
+  app.addEventListener('contextmenu', ev => {
+    if (!EDIT) return;
+    if (openCtxFor(ev.target, ev.clientX, ev.clientY)) ev.preventDefault();
+  });
+  /* Sur téléphone, un appui long remplace le clic droit. */
+  let LP = null, LPxy = null;
+  app.addEventListener('pointerdown', ev => {
+    if (!EDIT || ev.pointerType === 'mouse') return;
+    LPxy = { x: ev.clientX, y: ev.clientY, t: ev.target };
+    clearTimeout(LP);
+    LP = setTimeout(() => {
+      if (!LPxy) return;
+      if (openCtxFor(LPxy.t, LPxy.x, LPxy.y) && navigator.vibrate) navigator.vibrate(12);
+    }, 550);
+  });
+  const cancel = ev => {
+    if (LPxy && ev && ev.clientX != null && Math.hypot(ev.clientX - LPxy.x, ev.clientY - LPxy.y) < 10 && ev.type === 'pointerup') { }
+    clearTimeout(LP); LPxy = null;
+  };
+  app.addEventListener('pointerup', cancel);
+  app.addEventListener('pointercancel', cancel);
+  app.addEventListener('pointermove', ev => {
+    if (LPxy && Math.hypot(ev.clientX - LPxy.x, ev.clientY - LPxy.y) > 12) { clearTimeout(LP); LPxy = null; }
+  });
+}
+
+function textMenu(b, el) {
+  const path = el.dataset.edit;
+  const o = txOf(b, path);
+  const bump = (k, d, min, max) => () => { o[k] = Math.max(min, Math.min(max, nb(o[k], d) + (max > 0 ? 0 : 0))); };
+  const step = (k, d, inc, min, max) => { o[k] = Math.max(min, Math.min(max, Math.round((nb(o[k], d) + inc) * 100) / 100)); setDirty(true); render(); };
+  return [
+    { title: 'Ce texte' },
+    { label: 'Toutes les options…', do: () => openTextPanel(b.id, path) },
+    { label: 'Mettre un lien…', note: o.href ? 'lié' : '', do: () => {
+        const v = prompt('Adresse du lien (https://… ou #/page). Laisser vide pour retirer le lien.', o.href || '');
+        if (v === null) return; o.href = v.trim(); setDirty(true); render(); } },
+    { sep: 1 },
+    { title: 'Taille' },
+    { row: [
+      { label: '−', do: () => step('fs', 1, -.1, .3, 8) },
+      { label: 'Taille', do: () => step('fs', 1, 0, .3, 8) },
+      { label: '+', do: () => step('fs', 1, .1, .3, 8) }] },
+    { title: 'Position' },
+    { row: [
+      { label: '←', do: () => step('dx', 0, -16, -1200, 1200) },
+      { label: '→', do: () => step('dx', 0, 16, -1200, 1200) },
+      { label: '↑', do: () => step('dy', 0, -16, -1200, 1200) },
+      { label: '↓', do: () => step('dy', 0, 16, -1200, 1200) }] },
+    { label: 'Remettre à sa place', do: () => { o.dx = 0; o.dy = 0; o.rot = 0; setDirty(true); render(); } },
+    { sep: 1 },
+    { row: [
+      { label: 'Gauche', do: () => { o.align = 'left'; setDirty(true); render(); } },
+      { label: 'Centre', do: () => { o.align = 'center'; setDirty(true); render(); } },
+      { label: 'Droite', do: () => { o.align = 'right'; setDirty(true); render(); } }] },
+    { label: 'Couleur du texte…', do: () => { const v = prompt('Couleur (ex. #ffd400)', o.color || ''); if (v !== null) { o.color = v.trim(); setDirty(true); render(); } } },
+    { label: o.hide ? 'Réafficher ce texte' : 'Masquer ce texte', do: () => { o.hide = !o.hide; setDirty(true); render(); } },
+    { label: 'Effacer les retouches', danger: true, do: () => { delete b.tx[path]; setDirty(true); render(); } },
+    { sep: 1 },
+    { title: 'Ce bloc' },
+    { label: 'Ajouter un bouton ici', do: () => addFel(b, 'button') },
+    { label: 'Ajouter un bandeau ici', do: () => addFel(b, 'banner') },
+    { label: 'Réglages du bloc…', do: () => openBlockPanel(b.id) }
+  ];
+}
+
+function felMenu(b, e) {
+  if (!e) return blockMenu(b);
+  const step = (k, d, inc, min, max) => { e[k] = Math.max(min, Math.min(max, Math.round((nb(e[k], d) + inc) * 10) / 10)); setDirty(true); render(); };
+  const i = b.els.indexOf(e);
+  return [
+    { title: FEL[e.type] || 'Élément' },
+    { label: 'Toutes les options…', do: () => openFelPanel(b.id, e.id) },
+    { label: 'Changer le lien…', do: () => { const v = prompt('Adresse du lien', e.href || ''); if (v !== null) { e.href = v.trim(); setDirty(true); render(); } } },
+    e.type === 'image' ? { label: 'Choisir / rogner l’image…', do: () => pickAndCrop(src => { e.src = src; setDirty(true); render(); }) } : { sep: 1 },
+    { title: 'Position' },
+    { row: [
+      { label: '←', do: () => step('x', 50, -2, -20, 115) },
+      { label: '→', do: () => step('x', 50, 2, -20, 115) },
+      { label: '↑', do: () => step('y', 50, -2, -20, 115) },
+      { label: '↓', do: () => step('y', 50, 2, -20, 115) }] },
+    { title: 'Largeur' },
+    { row: [
+      { label: '−', do: () => step('w', 20, -2, 2, 100) },
+      { label: '+', do: () => step('w', 20, 2, 2, 100) },
+      { label: 'Auto', do: () => { e.w = 0; setDirty(true); render(); } },
+      { label: 'Pleine', do: () => { e.full = !e.full; setDirty(true); render(); } }] },
+    { sep: 1 },
+    { label: 'Passer devant', do: () => { e.z = nb(e.z, 5) + 1; setDirty(true); render(); } },
+    { label: 'Passer derrière', do: () => { e.z = Math.max(0, nb(e.z, 5) - 1); setDirty(true); render(); } },
+    { label: 'Dupliquer', do: () => { const c = JSON.parse(JSON.stringify(e)); c.id = uid('e'); c.y = nb(e.y, 40) + 6; b.els.splice(i + 1, 0, c); setDirty(true); render(); } },
+    { label: e.visible ? 'Masquer' : 'Afficher', do: () => { e.visible = !e.visible; setDirty(true); render(); } },
+    { label: 'Supprimer', danger: true, do: () => { b.els.splice(i, 1); setDirty(true); render(); } }
+  ];
+}
+
+function blockMenu(b) {
+  const list = D.pages[currentSlug()], i = list.indexOf(b);
+  return [
+    { title: KINDS[b.kind] || b.kind },
+    { label: 'Réglages complets…', do: () => openBlockPanel(b.id) },
+    { sep: 1 },
+    { title: 'Ajouter dans ce bloc' },
+    ...Object.entries(FEL).map(([k, l]) => ({ label: l, do: () => addFel(b, k) })),
+    { sep: 1 },
+    { label: 'Monter le bloc', do: () => { if (i > 0) { [list[i - 1], list[i]] = [list[i], list[i - 1]]; setDirty(true); render(); } } },
+    { label: 'Descendre le bloc', do: () => { if (i < list.length - 1) { [list[i + 1], list[i]] = [list[i], list[i + 1]]; setDirty(true); render(); } } },
+    { label: 'Dupliquer le bloc', do: () => { const c = JSON.parse(JSON.stringify(b)); c.id = uid('b'); (c.els || []).forEach(x => x.id = uid('e')); list.splice(i + 1, 0, c); setDirty(true); render(); } },
+    { label: 'Copier le bloc', do: () => { CLIP = JSON.parse(JSON.stringify(b)); toast('Bloc copié. Clic droit ailleurs pour le coller.'); } },
+    CLIP ? { label: 'Coller le bloc copié', do: () => { const c = JSON.parse(JSON.stringify(CLIP)); c.id = uid('b'); (c.els || []).forEach(x => x.id = uid('e')); list.splice(i + 1, 0, c); setDirty(true); render(); } } : { sep: 1 },
+    { label: b.visible ? 'Masquer le bloc' : 'Afficher le bloc', do: () => { b.visible = !b.visible; setDirty(true); render(); } },
+    { label: 'Effacer la mise en forme du bloc', do: () => { if (confirm('Remettre ce bloc dans son style d’origine ?')) { b.st = {}; b.tx = {}; setDirty(true); render(); } } },
+    { label: 'Supprimer le bloc', danger: true, do: () => { if (confirm('Supprimer ce bloc ?')) { list.splice(i, 1); setDirty(true); render(); } } }
+  ];
+}
+let CLIP = null;
+
+/* ── barre flottante du bloc survolé ─────────────────────── */
+function bindBlockBar() {
+  if (!EDIT) return;
+  let bar = $('.blkbar');
+  if (!bar) { bar = document.createElement('div'); bar.className = 'blkbar'; document.body.appendChild(bar); }
+  const paint = () => {
+    const b = SEL_BLOCK && blkOf(SEL_BLOCK);
+    if (!b) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    bar.innerHTML = `<span class="nm">${esc(KINDS[b.kind] || b.kind)}</span>
+      <button data-a="set" class="p">Réglages</button>
+      <button data-a="btn">+ Bouton</button>
+      <button data-a="ban">+ Bandeau</button>
+      <button data-a="txt">+ Texte</button>
+      <button data-a="img">+ Image</button>
+      <button data-a="up">↑</button><button data-a="down">↓</button>
+      <button data-a="dup">Dupliquer</button>
+      <button data-a="del">Supprimer</button>`;
+    bar.querySelectorAll('button').forEach(x => x.onclick = () => {
+      const list = D.pages[currentSlug()], i = list.indexOf(b);
+      const a = x.dataset.a;
+      if (a === 'set') return openBlockPanel(b.id);
+      if (a === 'btn') return addFel(b, 'button');
+      if (a === 'ban') return addFel(b, 'banner');
+      if (a === 'txt') return addFel(b, 'text');
+      if (a === 'img') return addFel(b, 'image');
+      if (a === 'up' && i > 0) [list[i - 1], list[i]] = [list[i], list[i - 1]];
+      if (a === 'down' && i < list.length - 1) [list[i + 1], list[i]] = [list[i], list[i + 1]];
+      if (a === 'dup') { const c = JSON.parse(JSON.stringify(b)); c.id = uid('b'); (c.els || []).forEach(y => y.id = uid('e')); list.splice(i + 1, 0, c); }
+      if (a === 'del' && !confirm('Supprimer ce bloc ?')) return;
+      if (a === 'del') { list.splice(i, 1); SEL_BLOCK = null; }
+      setDirty(true); render();
+    });
+  };
+  $$('#app [data-blk]').forEach(node => {
+    node.addEventListener('pointerenter', () => { SEL_BLOCK = node.dataset.blk; paint(); });
+    node.addEventListener('pointerdown', () => { SEL_BLOCK = node.dataset.blk; paint(); });
+  });
+  paint();
+}
+
+/* ── rogner une image ────────────────────────────────────── */
+function pickAndCrop(cb) {
+  pickOne(async r => {
+    openCrop(r.src, out => cb(out));
+  });
+}
+function pickOne(cb, accept = 'image/*') {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = accept;
+  inp.onchange = async () => {
+    if (!inp.files[0]) return;
+    try { cb(await readImage(inp.files[0])); } catch (e) { alert(e.message); }
+  };
+  inp.click();
+}
+
+function openCrop(src, done) {
+  const wrap = document.createElement('div');
+  wrap.className = 'crop';
+  wrap.innerHTML = `<div class="bx">
+    <div class="stage"><img alt=""><div class="sel"><i class="nw"></i><i class="ne"></i><i class="sw"></i><i class="se"></i></div></div>
+    <div class="bar">
+      <span style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#8a8a8a">Format</span>
+      ${[['0', 'Libre'], ['1', 'Carré'], ['1.3333', 'Paysage'], ['0.75', 'Portrait'], ['1.7778', 'Large'], ['0.5625', 'Vertical']]
+        .map(([v, l]) => `<button class="ed-b sm" data-ar="${v}">${l}</button>`).join('')}
+      <span class="sp"></span>
+      <button class="ed-b" data-x="rot">Pivoter 90°</button>
+      <button class="ed-b" data-x="cancel">Annuler</button>
+      <button class="ed-b p" data-x="ok">Rogner</button>
+    </div></div>`;
+  document.body.appendChild(wrap);
+  const img = wrap.querySelector('img'), selEl = wrap.querySelector('.sel'), stage = wrap.querySelector('.stage');
+  let AR = 0, angle = 0, cur = src;
+  let S = { x: .08, y: .08, w: .84, h: .84 };
+
+  const paint = () => {
+    const r = img.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+    selEl.style.left = (r.left - sr.left + S.x * r.width) + 'px';
+    selEl.style.top = (r.top - sr.top + S.y * r.height) + 'px';
+    selEl.style.width = (S.w * r.width) + 'px';
+    selEl.style.height = (S.h * r.height) + 'px';
+  };
+  const fixAR = () => {
+    if (!AR) return;
+    const r = img.getBoundingClientRect();
+    const wpx = S.w * r.width;
+    S.h = (wpx / AR) / r.height;
+    if (S.y + S.h > 1) { S.h = 1 - S.y; S.w = (S.h * r.height * AR) / r.width; }
+  };
+  img.onload = () => { paint(); };
+  img.src = cur;
+  addEventListener('resize', paint);
+
+  selEl.addEventListener('pointerdown', ev => {
+    ev.preventDefault();
+    const handle = ev.target.classList.contains('nw') ? 'nw' : ev.target.classList.contains('ne') ? 'ne'
+      : ev.target.classList.contains('sw') ? 'sw' : ev.target.classList.contains('se') ? 'se' : 'move';
+    const r = img.getBoundingClientRect();
+    const s0 = { ...S }, sx = ev.clientX, sy = ev.clientY;
+    selEl.setPointerCapture(ev.pointerId);
+    const move = m => {
+      const dx = (m.clientX - sx) / r.width, dy = (m.clientY - sy) / r.height;
+      if (handle === 'move') {
+        S.x = Math.max(0, Math.min(1 - s0.w, s0.x + dx));
+        S.y = Math.max(0, Math.min(1 - s0.h, s0.y + dy));
+      } else {
+        if (handle.includes('e')) S.w = Math.max(.04, Math.min(1 - s0.x, s0.w + dx));
+        if (handle.includes('w')) { S.w = Math.max(.04, s0.w - dx); S.x = Math.max(0, Math.min(s0.x + s0.w - .04, s0.x + dx)); }
+        if (handle.includes('s')) S.h = Math.max(.04, Math.min(1 - s0.y, s0.h + dy));
+        if (handle.includes('n')) { S.h = Math.max(.04, s0.h - dy); S.y = Math.max(0, Math.min(s0.y + s0.h - .04, s0.y + dy)); }
+        fixAR();
+      }
+      paint();
+    };
+    const up = () => { selEl.removeEventListener('pointermove', move); selEl.removeEventListener('pointerup', up); };
+    selEl.addEventListener('pointermove', move);
+    selEl.addEventListener('pointerup', up);
+  });
+
+  wrap.querySelectorAll('[data-ar]').forEach(b => b.onclick = () => {
+    AR = Number(b.dataset.ar); fixAR(); paint();
+  });
+  const close = () => { removeEventListener('resize', paint); wrap.remove(); };
+  wrap.querySelector('[data-x="cancel"]').onclick = close;
+  wrap.querySelector('[data-x="rot"]').onclick = () => {
+    const im = new Image();
+    im.onload = () => {
+      const cv = document.createElement('canvas');
+      cv.width = im.height; cv.height = im.width;
+      const c = cv.getContext('2d');
+      c.translate(cv.width / 2, cv.height / 2); c.rotate(Math.PI / 2);
+      c.drawImage(im, -im.width / 2, -im.height / 2);
+      cur = cv.toDataURL('image/jpeg', .88); img.src = cur;
+      S = { x: .08, y: .08, w: .84, h: .84 };
+    };
+    im.src = cur;
+  };
+  wrap.querySelector('[data-x="ok"]').onclick = () => {
+    const im = new Image();
+    im.onload = () => {
+      const cv = document.createElement('canvas');
+      cv.width = Math.max(1, Math.round(im.naturalWidth * S.w));
+      cv.height = Math.max(1, Math.round(im.naturalHeight * S.h));
+      cv.getContext('2d').drawImage(im,
+        Math.round(im.naturalWidth * S.x), Math.round(im.naturalHeight * S.y),
+        cv.width, cv.height, 0, 0, cv.width, cv.height);
+      close();
+      done(cv.toDataURL('image/jpeg', .88));
+    };
+    im.src = cur;
+  };
+}
+
+/* ── branchement, appelé à chaque rendu ──────────────────── */
+function bindLayout() {
+  if (!EDIT) { const bar = $('.blkbar'); if (bar) bar.remove(); if (GRIP) GRIP.style.display = 'none'; return; }
+  bindFelDrag();
+  bindTextDrag();
+  bindBlockBar();
+  if (!bindLayout._ctx) { bindCtx(); bindLayout._ctx = true; }
+}
+
 
 /* ════════════════════════════════════════════════════════════
    PUBLICATION EN LIGNE
@@ -3260,10 +4140,23 @@ async function loadRemote({ silent = true } = {}) {
     if (!j) throw new Error('contenu illisible');
     const localV = (D.meta || {}).version || 0;
     const remoteV = (j.meta || {}).version || 0;
+    SYNC.remoteVersion = remoteV;
+    SYNC.lastFetch = new Date();
+    /* Règle de sécurité : une version en ligne plus ancienne ne remplace jamais
+       le contenu du fichier. Sans ça, ouvrir le fichier suffirait à perdre
+       tout le travail fait depuis la dernière publication. */
+    if (remoteV < localV) {
+      SYNC.state = 'stale';
+      if (!silent) alert(`Le contenu en ligne est en version ${remoteV || '?'}, `
+        + `plus ancienne que ce fichier (version ${localV}). Il n’a pas été chargé : `
+        + `c’est le contenu du fichier qui reste affiché.\n\n`
+        + `Publier maintenant remettra la version en ligne à jour.`);
+      else console.warn('[vibes] version en ligne plus ancienne (' + remoteV + ' < ' + localV + '), non chargée.');
+      return false;
+    }
     D = j;
     SYNC.state = 'ok';
-    SYNC.lastFetch = new Date();
-    if (!silent) toast(`Contenu en ligne chargé (version ${remoteV || '?'}${remoteV < localV ? ', plus ancien que le fichier' : ''}).`);
+    if (!silent) toast(`Contenu en ligne chargé (version ${remoteV || '?'}).`);
     return true;
   } catch (e) {
     SYNC.state = 'error';
@@ -3278,10 +4171,10 @@ async function saveOnline() {
   const cfg = syncCfg();
   const github = cfg.provider === 'github';
   if (!github && !cfg.putUrl) { alert('Aucune adresse d’écriture n’est configurée, onglet En ligne.'); return false; }
-  if (github && (!cfg.owner || !cfg.repo)) { alert('Renseigne le propriétaire et le nom du dépôt, onglet En ligne.'); return false; }
+  if (github && (!cfg.owner || !cfg.repo)) { alert('Le propriétaire et le nom du dépôt sont à renseigner dans l’onglet En ligne.'); return false; }
   if ((github || cfg.headerName) && !SYNC.key) {
     const k = prompt(github
-      ? 'Colle ton jeton GitHub (il n’est jamais enregistré dans le fichier) :'
+      ? 'Jeton GitHub (il n’est jamais enregistré dans le fichier) :'
       : 'Clé d’écriture (elle n’est jamais enregistrée dans le fichier) :');
     if (!k) return false;
     SYNC.key = k.trim();
@@ -3307,7 +4200,7 @@ async function saveOnline() {
   } catch (e) {
     D.meta.version -= 1;
     alert('Publication impossible : ' + e.message +
-      '\n\nVérifie l’adresse d’écriture et la clé, onglet Partage.');
+      '\n\nL’adresse d’écriture et la clé sont à vérifier dans l’onglet En ligne.');
     return false;
   }
 }
@@ -3328,11 +4221,24 @@ async function testSync() {
 
 function tabEnLigne() {
   const c = syncCfg();
-  const etats = { off: 'Non branché', loading: 'Chargement…', ok: 'Branché et à jour', error: 'Erreur : ' + (SYNC.error || '') };
+  const etats = { off: 'Non branché', loading: 'Chargement…', ok: 'Branché et à jour',
+    stale: 'En ligne plus ancien que ce fichier', error: 'Erreur : ' + (SYNC.error || '') };
   const github = c.provider === 'github';
+  const localV = (D.meta || {}).version || 0;
+  const fichier = location.protocol === 'file:';
 
   return `<div class="ed-note"><b>État : ${esc(etats[SYNC.state] || SYNC.state)}</b>${
+    SYNC.remoteVersion != null ? `<br>En ligne : version ${SYNC.remoteVersion}. Ici : version ${localV}.` : ''}${
     SYNC.lastFetch ? `<br>Dernière lecture à ${SYNC.lastFetch.toLocaleTimeString('fr-FR')}.` : ''}</div>
+
+    ${SYNC.state === 'stale' ? `<div class="ed-note" style="border-color:#a06a00;background:rgba(255,180,0,.08)">
+      <b>Le site en ligne est en retard.</b> La version publiée est plus ancienne que le contenu de ce
+      fichier. Le contenu du fichier a été gardé. Un appui sur <b>Publier</b> met le site en ligne à jour.</div>` : ''}
+
+    ${fichier ? `<div class="ed-note" style="border-color:#a03a3a;background:rgba(255,80,80,.08)">
+      <b>Ce fichier est ouvert depuis l’ordinateur.</b> Depuis une adresse en <span class="mono">file://</span>,
+      GitHub refuse les écritures : le bouton Publier ne peut pas fonctionner. Pour publier, ouvrir le site
+      par son adresse internet, puis Ctrl+E.</div>` : ''}
 
     <div class="ed-note"><b>À quoi ça sert.</b> Tant que rien n’est branché ici, le contenu du site est
     enfermé dans le fichier : après chaque modification il faut redonner le fichier à tout le monde.
@@ -3344,8 +4250,8 @@ function tabEnLigne() {
       v => { c.provider = v; setDirty(true); paintPanel(); })}
 
     ${github ? `
-      ${f('Ton nom d’utilisateur GitHub', c.owner, v => { c.owner = v.trim(); setDirty(true); }, 'text',
-        'Celui qui apparaît dans l’adresse de ton dépôt.')}
+      ${f('Nom d’utilisateur GitHub', c.owner, v => { c.owner = v.trim(); setDirty(true); }, 'text',
+        'Celui qui apparaît dans l’adresse du dépôt.')}
       ${f('Nom du dépôt', c.repo, v => { c.repo = v.trim(); setDirty(true); }, 'text', 'Exemple : vibes-site')}
       ${f('Branche', c.branch || 'main', v => { c.branch = v.trim() || 'main'; setDirty(true); })}
       ${f('Nom du fichier de contenu', c.path || 'vibes-data.json', v => { c.path = v.trim() || 'vibes-data.json'; setDirty(true); })}
@@ -3357,7 +4263,7 @@ function tabEnLigne() {
       ${sel('Méthode d’écriture', c.method || 'PUT', ['PUT', 'POST', 'PATCH'], v => { c.method = v; setDirty(true); })}
       ${f('Nom de l’en-tête de clé', c.headerName, v => { c.headerName = v.trim(); setDirty(true); })}
       ${f('Préfixe de la clé', c.headerPrefix, v => { c.headerPrefix = v.trim(); setDirty(true); })}
-    ` : `<div class="ed-note">Choisis un service ci-dessus pour brancher le site.</div>`}
+    ` : `<div class="ed-note">Un service doit être choisi ci-dessus pour brancher le site.</div>`}
 
     ${c.provider ? `
     <h4>${github ? 'Jeton GitHub' : 'Clé d’écriture'}</h4>
@@ -3372,16 +4278,328 @@ function tabEnLigne() {
 
     <h4>La mise en route, une seule fois</h4>
     <div class="ed-note">
-      1. Remplis les champs ci-dessus et colle ${github ? 'ton jeton' : 'ta clé'}.<br>
-      2. Clique sur <b>Publier maintenant</b> : le contenu part sur internet.<br>
-      3. Clique sur <b>Télécharger le fichier</b> dans l’onglet Partage, et remets ce fichier en ligne
+      1. Remplir les champs ci-dessus et saisir ${github ? 'le jeton' : 'la clé'}.<br>
+      2. <b>Publier maintenant</b> : le contenu part sur internet.<br>
+      3. <b>Télécharger le fichier</b> dans l’onglet Partage, puis remettre ce fichier en ligne
          à la place de l’ancien. C’est la dernière fois.<br>
-      4. À partir de là, chacun ouvre le lien, se connecte, modifie, publie.
+      4. Ensuite, il suffit d’ouvrir le lien, de se connecter, de modifier et de publier.
     </div>` : ''}
 
     <h4>Si internet ne répond pas</h4>
     <div class="ed-note">Le site retombe sur le contenu enfermé dans le fichier. Les visiteurs voient une
     version un peu ancienne plutôt qu’une page vide.</div>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   PANNEAUX DE RÉGLAGE DÉTAILLÉS
+   Un bloc, un texte ou un élément libre : chacun a sa fiche
+   complète. Tout se règle ici, sans toucher au code.
+   ════════════════════════════════════════════════════════════ */
+
+let EDITING_TEXT = null;   // { blk, path }
+let EDITING_FEL = null;    // { blk, el }
+
+function openBlockPanel(id) {
+  TAB = 'contenu'; EDITING_TEXT = null; EDITING_FEL = null; ADDING = false;
+  EDITING_BLOCK = id; openPanel();
+}
+function openTextPanel(blk, path) {
+  TAB = 'contenu'; EDITING_BLOCK = null; EDITING_FEL = null; ADDING = false;
+  EDITING_TEXT = { blk, path }; openPanel();
+}
+function openFelPanel(blk, el) {
+  TAB = 'contenu'; EDITING_BLOCK = null; EDITING_TEXT = null; ADDING = false;
+  EDITING_FEL = { blk, el }; openPanel();
+}
+
+/* ── petits contrôles ────────────────────────────────────── */
+const rng = (label, value, min, max, step, oninput, unit) => {
+  const id = uid('f'); window['_h_' + id] = oninput;
+  return `<div class="ed-f"><label>${esc(label)} <span style="opacity:.55">${esc(String(value ?? ''))}${unit || ''}</span></label>
+    <span class="ed-row"><input type="range" min="${min}" max="${max}" step="${step}" value="${Number(value ?? min)}" data-h="${id}" style="flex:1">
+    <input type="number" min="${min}" max="${max}" step="${step}" value="${value ?? ''}" data-h="${id}" style="width:78px"></span></div>`;
+};
+const grp = (title, body, open) => `<details class="ed-grp"${open ? ' open' : ''}>
+  <summary>${esc(title)}</summary><div>${body}</div></details>`;
+
+const FONT_OPTS = () => [['', '— celle du site —']].concat(Object.keys(FONTS).map(k => [k, k]));
+const ALIGNS = [['', '— par défaut —'], ['left', 'À gauche'], ['center', 'Centré'], ['right', 'À droite'], ['justify', 'Justifié']];
+const CASES = [['', '— tel quel —'], ['uppercase', 'MAJUSCULES'], ['lowercase', 'minuscules'], ['capitalize', 'Initiales']];
+const mediaOpts = () => [['', '— aucune —']].concat((D.media || []).map(m => [m.id, (m.title || m.id) + (m.kind === 'video' ? ' (vidéo)' : '')]));
+
+/* ── fiche complète d'un bloc ────────────────────────────── */
+function blockStyle(b) {
+  const s = (b.st = b.st || {});
+  const R = () => { setDirty(true); render(); };
+  const P = () => { setDirty(true); render(); paintPanel(); };
+  const set = k => v => { s[k] = v; R(); };
+  const setN = k => v => { s[k] = (v === '' ? '' : Number(v)); R(); };
+
+  return grp('Fond et couleurs', ''
+    + f('Couleur de fond', s.bg, set('bg'), 'color', 'Laisser vide pour garder la peau choisie plus haut.')
+    + f('Couleur du texte', s.fg, set('fg'), 'color')
+    + f('Couleur d’accent', s.accent, set('accent'), 'color', 'Boutons, liens, détails.')
+    + f('Couleur des filets', s.line, set('line'), 'color')
+    + sel('Image de fond', s.bgImg || '', mediaOpts(), set('bgImg'))
+    + btn('Choisir une image de fond depuis l’ordinateur', () => pickAndCrop(src => {
+        D.media.push({ id: uid('m'), kind: 'photo', src, title: 'Fond de section', album: '', credit: '', alt: '', visible: false });
+        s.bgImg = D.media[D.media.length - 1].id; P();
+      }), 'sm')
+    + sel('Cadrage du fond', s.bgSize || 'cover', [['cover', 'Remplir'], ['contain', 'Entier'], ['auto', 'Taille réelle'], ['100% auto', 'Pleine largeur']], set('bgSize'))
+    + sel('Position du fond', s.bgPos || 'center', [['center', 'Centre'], ['top', 'Haut'], ['bottom', 'Bas'], ['left', 'Gauche'], ['right', 'Droite'], ['top left', 'Haut gauche'], ['top right', 'Haut droite']], set('bgPos'))
+    + rng('Opacité du fond', s.bgOp ?? 1, 0, 1, .05, setN('bgOp'))
+    + rng('Flou du fond', s.bgBlur ?? 0, 0, 40, 1, setN('bgBlur'), ' px')
+    + sel('Effet sur le fond', s.bgFilter || '', FILTERS, set('bgFilter'))
+    + chk('Fond fixe pendant le défilement', s.bgFixed, v => { s.bgFixed = v; R(); })
+    + chk('Fond répété en motif', s.bgRepeat, v => { s.bgRepeat = v; R(); })
+    + f('Voile par-dessus le fond', s.ovColor, set('ovColor'), 'color', 'Pour rendre le texte lisible sur une photo.')
+    + rng('Force du voile', s.ovOp ?? 0, 0, 1, .05, setN('ovOp'))
+    + chk('Voile en dégradé', s.ovGrad, v => { s.ovGrad = v; R(); })
+    + rng('Angle du dégradé', s.ovAngle ?? 180, 0, 360, 5, setN('ovAngle'), '°')
+    + sel('Fusion du voile', s.ovBlend || 'normal', BLEND, set('ovBlend')), true)
+
+  + grp('Dimensions et espacement', ''
+    + rng('Espacement général', s.pad ?? 1, .2, 3, .1, setN('pad'))
+    + f('Espace ajouté en haut', s.padT, set('padT'), 'text', 'En pixels, par exemple 80.')
+    + f('Espace ajouté en bas', s.padB, set('padB'), 'text')
+    + rng('Largeur maximale du contenu', s.maxw ?? 1560, 600, 2400, 20, setN('maxw'), ' px')
+    + rng('Largeur de la colonne de numéro', s.idxw ?? 148, 0, 400, 4, setN('idxw'), ' px')
+    + chk('Supprimer la colonne de numéro', s.noIdxCol, v => { s.noIdxCol = v; R(); })
+    + rng('Hauteur minimale', s.minH ?? 0, 0, 100, 5, setN('minH'), ' % d’écran')
+    + sel('Contenu placé', s.vAlign || 'center', [['flex-start', 'En haut'], ['center', 'Au milieu'], ['flex-end', 'En bas']], set('vAlign'))
+    + f('Décalage vers le haut', s.mt, set('mt'), 'text', 'Un nombre négatif fait chevaucher le bloc précédent.')
+    + f('Décalage vers le bas', s.mb, set('mb'), 'text')
+    + f('Marge sur les côtés', s.mx, set('mx'), 'text')
+    + rng('Nombre de colonnes', s.cols ?? 0, 0, 6, 1, setN('cols'))
+    + f('Écart entre les éléments', s.gap, set('gap'), 'text'))
+
+  + grp('Bordures, coins et ombre', ''
+    + rng('Coins arrondis du bloc', s.round ?? 0, 0, 80, 2, setN('round'), ' px')
+    + rng('Épaisseur du cadre', s.bw ?? 0, 0, 12, 1, setN('bw'), ' px')
+    + f('Couleur du cadre', s.bc, set('bc'), 'color')
+    + chk('Retirer le filet du haut', s.noRule, v => { s.noRule = v; R(); })
+    + f('Épaisseur du filet du haut', s.ruleW, set('ruleW'), 'text')
+    + f('Couleur du filet du haut', s.ruleC, set('ruleC'), 'color')
+    + rng('Ombre portée', s.shadow ?? 0, 0, 80, 2, setN('shadow'), ' px')
+    + rng('Densité de l’ombre', s.shadowA ?? .3, 0, .8, .05, setN('shadowA'))
+    + rng('Coins arrondis des images', s.imgRound ?? '', 0, 60, 2, setN('imgRound'), ' px'))
+
+  + grp('Textes du bloc', ''
+    + sel('Police du corps', s.font || '', FONT_OPTS(), set('font'))
+    + rng('Taille générale', s.fs ?? 1, .6, 2.2, .05, setN('fs'))
+    + rng('Interligne', s.lh ?? '', 1, 2.4, .05, setN('lh'))
+    + rng('Espacement des lettres', s.ls ?? '', -.06, .5, .01, setN('ls'), ' em')
+    + sel('Alignement', s.align || '', ALIGNS, set('align'))
+    + sel('Police des titres', s.titleFont || '', FONT_OPTS(), set('titleFont'))
+    + rng('Taille des titres', s.titleFs ?? 1, .5, 3, .05, setN('titleFs'))
+    + rng('Graisse des titres', s.titleFw ?? '', 100, 900, 100, setN('titleFw'))
+    + sel('Casse des titres', s.titleCase || '', CASES, set('titleCase'))
+    + rng('Espacement des titres', s.titleLs ?? '', -.08, .4, .01, setN('titleLs'), ' em')
+    + f('Couleur des titres', s.titleColor, set('titleColor'), 'color'))
+
+  + grp('Effets et affichage', ''
+    + sel('Effet sur les images', s.imgFilter || '', FILTERS, set('imgFilter'))
+    + sel('Fusion avec le bloc du dessous', s.blend || 'normal', BLEND, set('blend'))
+    + rng('Opacité du bloc', s.op ?? 1, .05, 1, .05, setN('op'))
+    + rng('Rotation', s.rot ?? 0, -20, 20, .5, setN('rot'), '°')
+    + rng('Inclinaison', s.skew ?? 0, -12, 12, .5, setN('skew'), '°')
+    + rng('Plan (avant / arrière)', s.z ?? 0, 0, 40, 1, setN('z'))
+    + chk('Bloc collé en haut au défilement', s.sticky, v => { s.sticky = v; R(); })
+    + chk('Cacher sur téléphone', s.hideM, v => { s.hideM = v; R(); })
+    + chk('Cacher sur ordinateur', s.hideD, v => { s.hideD = v; R(); })
+    + f('Ancre du bloc', s.anchor, set('anchor'), 'text', 'Permet un lien direct vers ce bloc : #/page puis cette ancre.'))
+
+  + grp('Éléments posés sur ce bloc', ''
+    + `<div class="ed-note">Boutons, bandeaux, textes libres, images, formes. Ils se placent à la souris,
+        se redimensionnent par leurs poignées, et se règlent en détail ici.</div>`
+    + Object.entries(FEL).map(([k, l]) => btn('+ ' + l, () => addFel(b, k), 'sm')).join(' ')
+    + ((b.els || []).length ? `<h4>Déjà posés</h4>` + b.els.map((e, i) => `<div class="ed-item"><div class="t">
+        <b>${esc(FEL[e.type] || e.type)}</b><span class="k">${esc((e.label || e.text || '').slice(0, 18))}</span>
+        ${btn('Régler', () => openFelPanel(b.id, e.id), 'sm')}
+        ${btn('✕', () => { b.els.splice(i, 1); P(); }, 'sm d')}</div></div>`).join('') : ''), (b.els || []).length > 0)
+
+  + grp('Retouches de texte enregistrées', ''
+    + (Object.keys(b.tx || {}).length
+      ? Object.keys(b.tx).map(k => `<div class="ed-item"><div class="t">
+          <b>${esc(k.split('.').slice(3).join(' · ') || k)}</b>
+          ${btn('Régler', () => openTextPanel(b.id, k), 'sm')}
+          ${btn('✕', () => { delete b.tx[k]; P(); }, 'sm d')}</div></div>`).join('')
+      : `<div class="ed-note">Aucune retouche. Sur la page, la pastille jaune qui apparaît au survol d’un texte
+          permet de le déplacer. Un clic droit ouvre toutes ses options.</div>`))
+
+  + grp('Réglages avancés', ''
+    + f('Feuille de style de ce bloc', s.css, set('css'), 'textarea',
+        'Réservé à qui connaît le CSS. Exemple : h2{color:red}. Le mot :bloc désigne le bloc entier.')
+    + btn('Effacer toute la mise en forme de ce bloc', () => {
+        if (confirm('Le bloc reprend son style d’origine. Les textes ne bougent pas.')) { b.st = {}; b.tx = {}; P(); }
+      }, 'd'));
+}
+
+/* ── fiche complète d'un texte ───────────────────────────── */
+function textPanel(b, path) {
+  const o = txOf(b, path);
+  const R = () => { setDirty(true); render(); };
+  const set = k => v => { o[k] = v; R(); };
+  const setN = k => v => { o[k] = (v === '' ? '' : Number(v)); R(); };
+  const val = getPath(path);
+  return `<div class="ed-note">Retouches du texte <b>${esc(String(val || path.split('.').pop()).slice(0, 40))}</b>
+      dans le bloc <b>${esc(KINDS[b.kind] || b.kind)}</b>. Le contenu se change directement sur la page.</div>`
+  + grp('Position', ''
+    + rng('Décalage horizontal', o.dx ?? 0, -900, 900, 2, setN('dx'), ' px')
+    + rng('Décalage vertical', o.dy ?? 0, -900, 900, 2, setN('dy'), ' px')
+    + rng('Rotation', o.rot ?? 0, -45, 45, .5, setN('rot'), '°')
+    + rng('Largeur', o.w ?? '', 5, 100, 1, setN('w'), ' %')
+    + sel('Alignement', o.align || '', ALIGNS, set('align'))
+    + f('Espace au-dessus', o.mt, set('mt'), 'text')
+    + f('Espace en dessous', o.mb, set('mb'), 'text')
+    + btn('Remettre à sa place d’origine', () => { o.dx = 0; o.dy = 0; o.rot = 0; o.w = ''; R(); }, 'sm'), true)
+  + grp('Apparence', ''
+    + rng('Taille', o.fs ?? 1, .3, 8, .05, setN('fs'))
+    + rng('Graisse', o.fw ?? '', 100, 900, 100, setN('fw'))
+    + sel('Police', o.font || '', FONT_OPTS(), set('font'))
+    + rng('Espacement des lettres', o.ls ?? '', -.1, .6, .01, setN('ls'), ' em')
+    + rng('Interligne', o.lh ?? '', .8, 2.6, .05, setN('lh'))
+    + sel('Casse', o.case || '', CASES, set('case'))
+    + f('Couleur', o.color, set('color'), 'color')
+    + f('Surlignage', o.bg, set('bg'), 'color')
+    + chk('Italique', o.italic, v => { o.italic = v; R(); })
+    + chk('Souligné', o.under, v => { o.under = v; R(); })
+    + f('Contour de lettres', o.stroke, set('stroke'), 'color', 'Le texte devient creux, avec ce contour.')
+    + rng('Épaisseur du contour', o.strokeW ?? 1, .5, 6, .5, setN('strokeW'), ' px')
+    + rng('Ombre du texte', o.shadow ?? 0, 0, 30, 1, setN('shadow'), ' px')
+    + rng('Opacité', o.op ?? 1, .05, 1, .05, setN('op')))
+  + grp('Lien et visibilité', ''
+    + f('Adresse du lien', o.href, set('href'), 'text', 'https://… pour un site, #/shop pour une page du site.')
+    + chk('Masquer ce texte', o.hide, v => { o.hide = v; R(); })
+    + chk('Masquer sur téléphone', o.hideM, v => { o.hideM = v; R(); }))
+  + `<div style="margin-top:16px">${btn('Effacer ces retouches', () => { delete b.tx[path]; setDirty(true); render(); openBlockPanel(b.id); }, 'd')}
+     ${btn('Retour au bloc', () => openBlockPanel(b.id))}</div>`;
+}
+
+/* ── fiche complète d'un élément libre ───────────────────── */
+function felPanel(b, e) {
+  const R = () => { setDirty(true); render(); };
+  const P = () => { setDirty(true); render(); paintPanel(); };
+  const set = k => v => { e[k] = v; R(); };
+  const setN = k => v => { e[k] = (v === '' ? '' : Number(v)); R(); };
+  const isText = ['button', 'banner', 'title', 'text', 'icon'].includes(e.type);
+
+  return `<div class="ed-note"><b>${esc(FEL[e.type] || e.type)}</b> posé sur le bloc
+      <b>${esc(KINDS[b.kind] || b.kind)}</b>. Sur la page, il se déplace à la souris et se
+      redimensionne par les poignées blanches.</div>`
+  + grp('Contenu', ''
+    + (isText ? f(e.type === 'text' ? 'Texte' : 'Libellé', e.type === 'text' ? e.text : e.label,
+        v => { if (e.type === 'text') e.text = v; else e.label = v; R(); }, e.type === 'text' ? 'textarea' : 'text') : '')
+    + (e.type === 'banner' ? f('Petite étiquette', e.kicker, set('kicker')) + f('Mention à droite', e.label2, set('label2')) : '')
+    + (['button', 'banner', 'image', 'text', 'title', 'icon'].includes(e.type)
+        ? f('Adresse du lien', e.href, set('href'), 'text', 'https://… ou #/shop. Vide = pas de lien.') : '')
+    + (e.type === 'embed' ? f('Adresse de la vidéo', e.href, set('href'), 'text', 'Lien YouTube ou adresse d’intégration.') : '')
+    + (e.type === 'image' ? sel('Image de la bibliothèque', e.src || '', mediaOpts(), set('src'))
+        + btn('Choisir et rogner une image', () => pickAndCrop(src => { e.src = src; R(); }), 'sm')
+        + (e.src && !(D.media || []).some(m => m.id === e.src) ? btn('Rogner à nouveau', () => openCrop(e.src, src => { e.src = src; R(); }), 'sm') : '')
+        + sel('Cadrage', e.fit || 'cover', [['cover', 'Remplir'], ['contain', 'Entier']], set('fit'))
+        + f('Texte de remplacement', e.alt, set('alt')) : '')
+    + (e.type === 'shape' ? sel('Forme', e.shape || 'rect', SHAPES, set('shape')) : ''), true)
+  + grp('Position et taille', ''
+    + rng('Position horizontale', e.x ?? 50, -20, 115, .5, setN('x'), ' %')
+    + rng('Position verticale', e.y ?? 50, -20, 115, .5, setN('y'), ' %')
+    + rng('Largeur', e.w ?? 0, 0, 100, .5, setN('w'), ' % — 0 = automatique')
+    + rng('Hauteur imposée', e.h ?? 0, 0, 900, 5, setN('h'), ' px — 0 = automatique')
+    + chk('Pleine largeur du bloc', e.full, v => { e.full = v; R(); })
+    + rng('Rotation', e.rot ?? 0, -180, 180, 1, setN('rot'), '°')
+    + rng('Échelle', e.scale ?? 1, .2, 3, .05, setN('scale'))
+    + rng('Plan (avant / arrière)', e.z ?? 5, 0, 60, 1, setN('z')))
+  + grp('Apparence', ''
+    + f('Fond', e.bg, set('bg'), 'color')
+    + f('Couleur du texte', e.fg, set('fg'), 'color')
+    + rng('Coins arrondis', e.r ?? '', 0, 200, 2, setN('r'), ' px')
+    + rng('Épaisseur du cadre', e.bw ?? 0, 0, 14, 1, setN('bw'), ' px')
+    + f('Couleur du cadre', e.bc, set('bc'), 'color')
+    + sel('Style du cadre', e.bstyle || 'solid', [['solid', 'Trait plein'], ['dashed', 'Tirets'], ['dotted', 'Points'], ['double', 'Double']], set('bstyle'))
+    + rng('Marge intérieure verticale', e.py ?? '', 0, 90, 1, setN('py'), ' px')
+    + rng('Marge intérieure horizontale', e.px ?? '', 0, 120, 1, setN('px'), ' px')
+    + rng('Ombre', e.shadow ?? 0, 0, 60, 2, setN('shadow'), ' px')
+    + rng('Densité de l’ombre', e.shadowA ?? .3, 0, .8, .05, setN('shadowA'))
+    + rng('Flou derrière l’élément', e.blur ?? 0, 0, 30, 1, setN('blur'), ' px')
+    + sel('Effet', e.filter || '', FILTERS, set('filter'))
+    + rng('Opacité', e.op ?? 1, .05, 1, .05, setN('op'))
+    + sel('Fusion', e.blend || 'normal', BLEND, set('blend')))
+  + (isText ? grp('Typographie', ''
+    + rng('Taille', e.fs ?? 1, .4, 8, .05, setN('fs'), ' rem')
+    + rng('Graisse', e.fw ?? '', 100, 900, 100, setN('fw'))
+    + sel('Police', e.font || '', FONT_OPTS(), set('font'))
+    + rng('Espacement des lettres', e.ls ?? '', -.08, .6, .01, setN('ls'), ' em')
+    + rng('Interligne', e.lh ?? '', .8, 2.6, .05, setN('lh'))
+    + sel('Casse', e.case || '', CASES, set('case'))
+    + sel('Alignement', e.al || '', ALIGNS, set('al'))) : '')
+  + grp('Apparition et visibilité', ''
+    + sel('Animation à l’arrivée', e.anim || '', ANIMS, set('anim'))
+    + chk('Élément visible', e.visible !== false, v => { e.visible = v; R(); })
+    + chk('Cacher sur téléphone', e.hideM, v => { e.hideM = v; R(); })
+    + chk('Cacher sur ordinateur', e.hideD, v => { e.hideD = v; R(); })
+    + f('Style libre', e.css, set('css'), 'textarea', 'Réservé à qui connaît le CSS.'))
+  + `<div style="margin-top:16px">
+      ${btn('Dupliquer', () => { const c = JSON.parse(JSON.stringify(e)); c.id = uid('e'); c.y = nb(e.y, 40) + 6; b.els.push(c); P(); }, 'sm')}
+      ${btn('Supprimer', () => { b.els.splice(b.els.indexOf(e), 1); openBlockPanel(b.id); setDirty(true); render(); }, 'd')}
+      ${btn('Retour au bloc', () => openBlockPanel(b.id))}</div>`;
+}
+
+/* ── onglet Pages ────────────────────────────────────────── */
+function tabPages() {
+  const R = () => { setDirty(true); render(); paintPanel(); };
+  const slugify = s => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'page';
+
+  return `<div class="ed-note">Chaque page du site se crée, se renomme, se réorganise et se supprime ici.</div>`
+  + D.nav.map((n, i) => `<div class="ed-item">
+      ${f('Nom affiché', n.label, v => { n.label = v; render(); paintChrome(); setDirty(true); })}
+      ${n.slug !== '' ? f('Adresse de la page', n.slug, v => {
+          const old = n.slug, ns = slugify(v);
+          if (ns === old || D.nav.some(x => x.slug === ns)) return;
+          D.pages[ns] = D.pages[old] || []; delete D.pages[old]; n.slug = ns; setDirty(true);
+        }, 'text', 'Elle apparaît dans le lien : #/' + esc(n.slug)) : `<div class="hint">Page d’accueil.</div>`}
+      ${chk('Visible dans le menu', n.inNav, v => { n.inNav = v; render(); })}
+      <div class="ed-row" style="flex-wrap:wrap;gap:6px">
+        ${btn('Ouvrir', () => { location.hash = '#/' + n.slug; setTimeout(paintPanel, 60); }, 'sm')}
+        ${btn('↑', () => { if (i > 0) { [D.nav[i - 1], D.nav[i]] = [D.nav[i], D.nav[i - 1]]; R(); } }, 'sm')}
+        ${btn('↓', () => { if (i < D.nav.length - 1) { [D.nav[i + 1], D.nav[i]] = [D.nav[i], D.nav[i + 1]]; R(); } }, 'sm')}
+        ${btn('Dupliquer', () => {
+            let ns = slugify(n.label + '-copie'), k = 2;
+            while (D.nav.some(x => x.slug === ns)) ns = slugify(n.label + '-copie-' + k++);
+            const cp = JSON.parse(JSON.stringify(D.pages[n.slug] || []));
+            cp.forEach(b => { b.id = uid('b'); (b.els || []).forEach(e => e.id = uid('e')); });
+            D.pages[ns] = cp; D.nav.splice(i + 1, 0, { slug: ns, label: n.label + ' (copie)', inNav: false }); R();
+          }, 'sm')}
+        ${n.slug !== '' ? btn('Vider', () => { if (confirm('Retirer tous les blocs de cette page ?')) { D.pages[n.slug] = []; R(); } }, 'sm') : ''}
+        ${n.slug !== '' ? btn('Supprimer', () => {
+            if (!confirm('Supprimer la page « ' + n.label +' » et tout son contenu ?')) return;
+            delete D.pages[n.slug]; D.nav.splice(i, 1);
+            if (currentSlug() === n.slug) location.hash = '#/';
+            R();
+          }, 'sm d') : ''}
+      </div></div>`).join('')
+  + `<div style="margin-top:14px">${btn('+ Créer une page', () => {
+      const name = prompt('Nom de la nouvelle page :', 'Nouvelle page');
+      if (!name) return;
+      let s = slugify(name), k = 2;
+      while (D.nav.some(x => x.slug === s)) s = slugify(name) + '-' + k++;
+      D.pages[s] = [{ id: uid('b'), kind: 'hero', visible: true, d: defaultsFor('hero') }];
+      D.nav.push({ slug: s, label: name, inNav: true });
+      location.hash = '#/' + s; R();
+    }, 'p')}</div>`
+  + `<h4>Remise à zéro</h4>
+     <div class="ed-note">Ces boutons ne touchent ni aux artistes, ni aux sorties, ni aux médias, ni à la boutique.</div>`
+  + btn('Effacer toute la mise en forme du site', () => {
+      if (!confirm('Toutes les retouches de blocs, de textes et tous les éléments posés seront effacés. Continuer ?')) return;
+      for (const list of Object.values(D.pages)) for (const b of list) { b.st = {}; b.tx = {}; b.els = []; }
+      R();
+    }, 'd')
+  + ' ' + btn('Repartir d’une page blanche', () => {
+      const s = currentSlug();
+      if (!confirm('La page en cours sera vidée et repartira d’un bloc vierge. Continuer ?')) return;
+      D.pages[s] = [{ id: uid('b'), kind: 'hero', visible: true, d: defaultsFor('hero') }];
+      R();
+    }, 'd');
 }
 
 
@@ -3396,7 +4614,28 @@ function setDirty(v) {
   const st = $('#edState');
   if (st) { st.dataset.dirty = v ? '1' : '0'; st.textContent = v ? 'Modifications non enregistrées' : 'À jour'; }
 }
+/** L'interface d'édition n'existe pas dans la page tant que personne ne l'ouvre.
+    Un visiteur n'en voit donc aucune trace, même en inspectant la page. */
+function mountEd() {
+  if ($('#edShellHost')) return;
+  const tpl = $('#edShell');
+  if (!tpl) return;
+  const host = document.createElement('div');
+  host.id = 'edShellHost';
+  host.appendChild(tpl.content.cloneNode(true));
+  document.body.appendChild(host);
+  $('#edClose').onclick = closePanel;
+  $('#edFab').onclick = openPanel;
+  $('#edSave').onclick = () => (syncOn() ? saveOnline() : save());
+  $('#edSave').textContent = syncOn() ? 'Publier' : 'Enregistrer';
+  setInterval(() => {
+    const b = $('#edSave');
+    if (b) b.textContent = syncOn() ? 'Publier' : 'Enregistrer';
+  }, 1200);
+}
+
 function toast(msg) {
+  mountEd();
   const t = $('#toast'); t.textContent = msg; t.dataset.on = '1';
   clearTimeout(t._t); t._t = setTimeout(() => t.dataset.on = '0', 2400);
 }
@@ -3492,10 +4731,10 @@ function pickFiles(cb, accept = 'image/*,video/mp4,video/webm') {
 
 /* ── panneau ──────────────────────────────────────────────── */
 let EDITING_BLOCK = null, ADDING = false;
-const TABS = [['contenu', 'Contenu'], ['apparence', 'Apparence'], ['actus', 'Actus'], ['artistes', 'Artistes'],
+const TABS = [['contenu', 'Contenu'], ['pages', 'Pages'], ['apparence', 'Apparence'], ['actus', 'Actus'], ['artistes', 'Artistes'],
   ['sorties', 'Sorties'], ['medias', 'Médias'], ['boutique', 'Boutique'], ['liens', 'Liens'], ['enligne', 'En ligne'], ['partage', 'Partage'], ['aide', 'Aide']];
 
-function openPanel() { document.body.classList.add('ed-open'); paintPanel(); }
+function openPanel() { mountEd(); document.body.classList.add('ed-open'); paintPanel(); }
 function closePanel() { document.body.classList.remove('ed-open'); }
 
 const f = (label, value, oninput, type = 'text', hint = '') => {
@@ -3529,9 +4768,9 @@ const chk = (label, value, oninput) => {
 function paintPanel() {
   $('#edTabs').innerHTML = TABS.map(([k, l]) =>
     `<button data-tab="${k}" aria-pressed="${TAB === k}">${l}</button>`).join('');
-  $('#edTabs').querySelectorAll('button').forEach(b => b.onclick = () => { TAB = b.dataset.tab; EDITING_BLOCK = null; ADDING = false; paintPanel(); });
+  $('#edTabs').querySelectorAll('button').forEach(b => b.onclick = () => { TAB = b.dataset.tab; EDITING_BLOCK = null; EDITING_TEXT = null; EDITING_FEL = null; ADDING = false; paintPanel(); });
   $('#edBody').innerHTML = ({
-    contenu: tabContenu, apparence: tabApparence, actus: tabActus, artistes: tabArtistes,
+    contenu: tabContenu, pages: tabPages, apparence: tabApparence, actus: tabActus, artistes: tabArtistes,
     sorties: tabSorties, medias: tabMedias, boutique: tabBoutique, liens: tabLiens, enligne: tabEnLigne, partage: tabPartage, aide: tabAide
   }[TAB])();
   const dz = $('#dropZone');
@@ -3562,8 +4801,19 @@ function paintPanel() {
 function tabContenu() {
   const slug = currentSlug();
   const list = D.pages[slug] || [];
+  if (EDITING_TEXT) {
+    const b = list.find(x => x.id === EDITING_TEXT.blk);
+    if (b) return textPanel(b, EDITING_TEXT.path);
+    EDITING_TEXT = null;
+  }
+  if (EDITING_FEL) {
+    const b = list.find(x => x.id === EDITING_FEL.blk);
+    const e = b && (b.els || []).find(x => x.id === EDITING_FEL.el);
+    if (b && e) return felPanel(b, e);
+    EDITING_FEL = null;
+  }
   if (ADDING) {
-    return `<div class="ed-note">Choisis le type de bloc à ajouter à la page <b>${esc(D.nav.find(n => n.slug === slug)?.label || 'Accueil')}</b>.</div>`
+    return `<div class="ed-note">Type de bloc à ajouter à la page <b>${esc(D.nav.find(n => n.slug === slug)?.label || 'Accueil')}</b>.</div>`
       + Object.entries(KINDS).map(([k, l]) => btn(l, () => {
         list.push({ id: uid('b'), kind: k, visible: true, bg: '', d: defaultsFor(k) });
         ADDING = false; setDirty(true); render(); paintPanel();
@@ -3573,29 +4823,41 @@ function tabContenu() {
   if (EDITING_BLOCK) {
     const b = list.find(x => x.id === EDITING_BLOCK);
     if (!b) { EDITING_BLOCK = null; return tabContenu(); }
-    return `<div class="ed-note">Réglages du bloc <b>${esc(KINDS[b.kind])}</b>. Les textes se modifient
-      directement sur la page, en cliquant dessus.</div>`
-      + sel('Peau de la section', b.tone || 'dark', TONES, v => { b.tone = v; render(); })
-      + sel('Alignement', b.align || 'left', [['left', 'À gauche'], ['center', 'Centré']], v => { b.align = v; render(); })
-      + chk('Colonne étroite, texte plus resserré', b.narrow, v => { b.narrow = v; render(); })
-      + chk('Masquer le numéro en marge', b.noIdx, v => { b.noIdx = v; render(); })
-      + f('Espacement de la section', b.pad || 1, v => { b.pad = Number(v) || 1; render(); }, 'number', '1 = normal, 0.6 = serré, 1.6 = aéré')
-      + blockExtras(b, slug)
-      + `<div style="margin-top:16px">${btn('Retour', () => { EDITING_BLOCK = null; paintPanel(); })}</div>`;
+    return `<div class="ed-note">Bloc <b>${esc(KINDS[b.kind] || b.kind)}</b>. Les textes se modifient
+      directement sur la page. Clic droit sur la page pour les options rapides.</div>`
+      + grp('Réglages de base', ''
+        + sel('Peau de la section', b.tone || 'dark', TONES, v => { b.tone = v; render(); })
+        + sel('Alignement', b.align || 'left', [['left', 'À gauche'], ['center', 'Centré']], v => { b.align = v; render(); })
+        + chk('Colonne étroite, texte plus resserré', b.narrow, v => { b.narrow = v; render(); })
+        + chk('Masquer le numéro en marge', b.noIdx, v => { b.noIdx = v; render(); })
+        + chk('Bloc visible', b.visible, v => { b.visible = v; render(); })
+        + sel('Changer le type de bloc', b.kind, Object.entries(KINDS), v => {
+            if (v === b.kind) return;
+            if (!confirm('Le contenu propre à ce type de bloc sera remplacé. Continuer ?')) { paintPanel(); return; }
+            b.kind = v; b.d = Object.assign(defaultsFor(v), b.d || {});
+            setDirty(true); render(); paintPanel();
+          }), true)
+      + grp('Contenu de ce bloc', blockExtras(b, slug) || '<div class="ed-note">Ce bloc n’a pas de réglage de contenu supplémentaire.</div>', true)
+      + blockStyle(b)
+      + `<div style="margin-top:16px">${btn('Retour à la liste', () => { EDITING_BLOCK = null; paintPanel(); })}</div>`;
   }
-  return `<div class="ed-note">Tu es sur la page <b>${esc(D.nav.find(n => n.slug === slug)?.label || 'Accueil')}</b>.
-    Clique sur n’importe quel texte de la page pour le modifier. Survole un bloc pour le déplacer ou le supprimer.</div>`
+  return `<div class="ed-note">Page en cours : <b>${esc(D.nav.find(n => n.slug === slug)?.label || 'Accueil')}</b>.
+    Un clic sur un texte de la page le rend modifiable. Un clic droit (ou un appui long sur téléphone)
+    ouvre les options rapides. La pastille jaune qui apparaît au survol d’un texte permet de le déplacer
+    dans toutes les directions.</div>`
     + `<h4>Blocs de cette page</h4>`
     + list.map((b, i) => `<div class="ed-item"><div class="t">
         <b>${esc(KINDS[b.kind] || b.kind)}</b>
-        <span class="k">${b.visible ? '' : 'masqué'}</span>
+        <span class="k">${b.visible ? '' : 'masqué'}${(b.els || []).length ? ' · ' + b.els.length + ' élément' + (b.els.length > 1 ? 's' : '') : ''}</span>
+        ${btn('↑', () => { if (i > 0) { [list[i - 1], list[i]] = [list[i], list[i - 1]]; setDirty(true); render(); paintPanel(); } }, 'sm')}
+        ${btn('↓', () => { if (i < list.length - 1) { [list[i + 1], list[i]] = [list[i], list[i + 1]]; setDirty(true); render(); paintPanel(); } }, 'sm')}
+        ${btn('Dupliquer', () => { const c = JSON.parse(JSON.stringify(b)); c.id = uid('b'); (c.els || []).forEach(e => e.id = uid('e')); list.splice(i + 1, 0, c); setDirty(true); render(); paintPanel(); }, 'sm')}
         ${btn('Réglages', () => { EDITING_BLOCK = b.id; paintPanel(); }, 'sm')}
       </div></div>`).join('')
     + `<div style="margin-top:12px">${btn('+ Ajouter un bloc', () => { ADDING = true; paintPanel(); }, 'p')}</div>`
-    + `<h4>Pages du site</h4>`
+    + `<h4>Aller sur une autre page</h4>`
     + D.nav.map(n => `<div class="ed-item"><div class="t"><b>${esc(n.label)}</b>
-        ${chk('Menu', n.inNav, v => { n.inNav = v; render(); })}
-        ${btn('Ouvrir', () => { location.hash = '#/' + n.slug; }, 'sm')}</div></div>`).join('');
+        ${btn('Ouvrir', () => { location.hash = '#/' + n.slug; setTimeout(paintPanel, 60); }, 'sm')}</div></div>`).join('');
 }
 
 function defaultsFor(k) {
@@ -3692,7 +4954,7 @@ function blockExtras(b, slug) {
           ? sel('Album', d.album || '', [['', 'Tous']].concat([...new Set(D.media.map(m => m.album).filter(Boolean))].map(a => [a, a])), v => { d.album = v; render(); })
           : '');
     case 'namelist': case 'shopgrid':
-      return `<div class="ed-note">Ce bloc se remplit tout seul. Gère son contenu dans l’onglet correspondant.</div>`;
+      return `<div class="ed-note">Ce bloc se remplit tout seul à partir du contenu de l’onglet correspondant.</div>`;
     case 'contactform':
       return `<h4>Objets proposés</h4>` + f('Un objet par ligne', (d.subjects || []).join('\n'),
         v => { d.subjects = v.split('\n').map(s => s.trim()).filter(Boolean); render(); }, 'textarea');
@@ -3708,7 +4970,7 @@ function tabApparence() {
   const num = (label, key, dflt, step, hint) =>
     f(label, t[key] ?? dflt, v => { t[key] = Number(v); applyTheme(); }, 'number', hint);
 
-  return `<div class="ed-note">Chaque réglage s’applique tout de suite. Pense à <b>Enregistrer</b> ensuite.</div>
+  return `<div class="ed-note">Chaque réglage s’applique immédiatement. L’enregistrement reste à faire ensuite.</div>
 
     <h4>Ambiances prêtes</h4>
     ${PRESETS.map(pr => btn(pr.name, () => { Object.assign(t, pr.t); applyTheme(); render(); paintPanel(); }, 'sm')).join(' ')}
@@ -3841,7 +5103,8 @@ function tabActus() {
       <div class="bd">
         ${a.image ? `<div class="ed-thumbs"><div class="th"><img src="${a.image}">
           ${btn('✕', () => { a.image = ''; render(); paintPanel(); }, 'sm')}</div></div>` : ''}
-        ${btn(a.image ? 'Changer le visuel' : 'Ajouter un visuel', () => pickFiles(x => { a.image = x.src; }, 'image/*'), 'sm')}
+        ${btn(a.image ? 'Changer le visuel' : 'Ajouter un visuel', () => pickAndCrop(src => { a.image = src; setDirty(true); render(); paintPanel(); }), 'sm')}
+        ${a.image ? btn('Rogner', () => openCrop(a.image, src => { a.image = src; setDirty(true); render(); paintPanel(); }), 'sm') : ''}
         ${f('Titre', a.title, v => { a.title = v; render(); })}
         ${f('Étiquette', a.tag, v => { a.tag = v; render(); }, 'text', 'Sortie, Concert, Annonce…')}
         ${f('Date', a.date, v => { a.date = v; render(); }, 'date')}
@@ -3855,7 +5118,7 @@ function tabActus() {
 }
 
 function tabArtistes() {
-  return `<div class="ed-note">Dépose une photo pour chaque artiste. Sans photo, un cadre gris s’affiche.</div>`
+  return `<div class="ed-note">Une photo par artiste. Sans photo, un cadre gris s’affiche.</div>`
     + D.artists.map((a, i) => `<div class="ed-item">
       <div class="t"><b>${esc(a.name || '(sans nom)')}</b>
         ${btn(a.visible ? 'Visible' : 'Masqué', () => { a.visible = !a.visible; render(); paintPanel(); }, 'sm')}
@@ -3863,9 +5126,10 @@ function tabArtistes() {
       <div class="bd">
         ${a.photo ? `<div class="ed-thumbs"><div class="th"><img src="${a.photo}">
           ${btn('✕', () => { a.photo = ''; render(); paintPanel(); }, 'sm')}</div></div>` : ''}
-        ${btn(a.photo ? 'Changer la photo' : 'Ajouter une photo', () => pickFiles(r => { a.photo = r.src; }, 'image/*'), 'sm')}
+        ${btn(a.photo ? 'Changer la photo' : 'Ajouter une photo', () => pickAndCrop(src => { a.photo = src; setDirty(true); render(); paintPanel(); }), 'sm')}
+        ${a.photo ? btn('Rogner', () => openCrop(a.photo, src => { a.photo = src; setDirty(true); render(); paintPanel(); }), 'sm') : ''}
         ${f('Nom', a.name, v => { a.name = v; render(); })}
-        ${f('Rôle', a.role, v => { a.role = v; render(); }, 'text', 'Rap, prod, mix, image… laisse vide si tu ne sais pas')}
+        ${f('Rôle', a.role, v => { a.role = v; render(); }, 'text', 'Rap, prod, mix, image… champ facultatif')}
         ${f('Lien (Spotify, Instagram…)', a.url, v => { a.url = v; render(); })}
       </div></div>`).join('')
     + btn('+ Ajouter un artiste', () => {
@@ -3882,7 +5146,8 @@ function tabSorties() {
       <div class="bd">
         ${r.cover ? `<div class="ed-thumbs"><div class="th"><img src="${r.cover}">
           ${btn('✕', () => { r.cover = ''; render(); paintPanel(); }, 'sm')}</div></div>` : ''}
-        ${btn(r.cover ? 'Changer la pochette' : 'Ajouter la pochette', () => pickFiles(x => { r.cover = x.src; }, 'image/*'), 'sm')}
+        ${btn(r.cover ? 'Changer la pochette' : 'Ajouter la pochette', () => pickAndCrop(src => { r.cover = src; setDirty(true); render(); paintPanel(); }), 'sm')}
+        ${r.cover ? btn('Rogner', () => openCrop(r.cover, src => { r.cover = src; setDirty(true); render(); paintPanel(); }), 'sm') : ''}
         ${f('Titre', r.title, v => { r.title = v; render(); })}
         ${sel('Type', r.kind, ['Album', 'EP', 'Single', 'Mixtape'], v => { r.kind = v; render(); })}
         ${f('Date de sortie', r.date, v => { r.date = v; render(); }, 'date')}
@@ -3906,7 +5171,7 @@ function tabSorties() {
 function tabMedias() {
   const albums = [...new Set(D.media.map(m => m.album).filter(Boolean))];
   return `<div class="ed-note">Les images sont automatiquement allégées avant d’être intégrées au fichier.
-    Pour les vidéos, préfère un lien YouTube ou Instagram : un fichier vidéo alourdit énormément le site.</div>
+    Pour les vidéos, un lien YouTube ou Instagram est préférable : un fichier vidéo alourdit énormément le site.</div>
     <div class="ed-drop" id="dropZone">Cliquer ou déposer des fichiers ici</div>
     ${albums.length ? `<h4>Albums existants</h4><p class="hint" style="color:#8d8b86">${albums.map(esc).join(' · ')}</p>` : ''}
     <h4>${D.media.length} média${D.media.length > 1 ? 's' : ''}</h4>`
@@ -3919,14 +5184,18 @@ function tabMedias() {
         ${f('Description pour les lecteurs d’écran', m.alt, v => { m.alt = v; render(); })}
         <div class="ed-row">
           ${btn(m.visible ? 'Visible' : 'Masqué', () => { m.visible = !m.visible; render(); paintPanel(); }, 'sm')}
+          ${m.kind !== 'video' ? btn('Rogner', () => openCrop(m.src, src => { m.src = src; setDirty(true); render(); paintPanel(); }), 'sm') : ''}
+          ${m.kind !== 'video' ? btn('Remplacer', () => pickAndCrop(src => { m.src = src; setDirty(true); render(); paintPanel(); }), 'sm') : ''}
+          ${btn('↑', () => { if (i > 0) { [D.media[i - 1], D.media[i]] = [D.media[i], D.media[i - 1]]; setDirty(true); render(); paintPanel(); } }, 'sm')}
+          ${btn('↓', () => { if (i < D.media.length - 1) { [D.media[i + 1], D.media[i]] = [D.media[i], D.media[i + 1]]; setDirty(true); render(); paintPanel(); } }, 'sm')}
           ${btn('Supprimer', () => { if (confirm('Supprimer ce média ?')) { D.media.splice(i, 1); render(); paintPanel(); } }, 'sm d')}
         </div></div>`).join('');
 }
 
 function tabBoutique() {
   const s = D.shop;
-  return `<div class="ed-note">Pour encaisser par carte, crée un <b>lien de paiement</b> sur stripe.com puis colle-le
-    dans la fiche du produit. Sans lien, les commandes t’arrivent par e-mail.</div>
+  return `<div class="ed-note">Pour encaisser par carte : créer un <b>lien de paiement</b> sur stripe.com, puis le reporter
+    dans la fiche du produit. Sans lien, les commandes arrivent par e-mail.</div>
     <h4>Produits</h4>`
     + D.products.map((p, i) => `<div class="ed-item">
         <div class="t"><b>${esc(p.name || '(sans nom)')}</b>
@@ -3934,8 +5203,10 @@ function tabBoutique() {
           ${btn('✕', () => { if (confirm('Supprimer ?')) { D.products.splice(i, 1); render(); paintPanel(); } }, 'sm d')}</div>
         <div class="bd">
           ${(p.images || []).length ? `<div class="ed-thumbs">${p.images.map((src, j) =>
-            `<div class="th"><img src="${src}">${btn('✕', () => { p.images.splice(j, 1); render(); paintPanel(); }, 'sm')}</div>`).join('')}</div>` : ''}
+            `<div class="th"><img src="${src}">${btn('✕', () => { p.images.splice(j, 1); render(); paintPanel(); }, 'sm')}
+              ${btn('Rogner', () => openCrop(src, out => { p.images[j] = out; setDirty(true); render(); paintPanel(); }), 'sm')}</div>`).join('')}</div>` : ''}
           ${btn('Ajouter des visuels', () => pickFiles(x => { (p.images = p.images || []).push(x.src); }, 'image/*'), 'sm')}
+          ${btn('Ajouter un visuel en le rognant', () => pickAndCrop(src => { (p.images = p.images || []).push(src); setDirty(true); render(); paintPanel(); }), 'sm')}
           ${f('Nom', p.name, v => { p.name = v; render(); })}
           ${f('Collection', p.capsule, v => { p.capsule = v; render(); })}
           ${f('Prix en euros', (p.price / 100).toFixed(2), v => { p.price = Math.round(Number(v) * 100) || 0; render(); }, 'number')}
@@ -3946,7 +5217,7 @@ function tabBoutique() {
           ${sel('Rayon', p.gender || 'unisexe', GENDERS, v => { p.gender = v; render(); })}
           ${sel('Catégorie', p.category || 'top', CATS, v => { p.category = v; render(); })}
           ${f('Pastille', p.badge, v => { p.badge = v; render(); }, 'text', 'Nouveau, Dernières pièces…')}
-          ${f('Lien de paiement Stripe', p.payLink, v => { p.payLink = v; render(); }, 'text', 'Facultatif. Colle ici le lien créé sur stripe.com.')}
+          ${f('Lien de paiement Stripe', p.payLink, v => { p.payLink = v; render(); }, 'text', 'Facultatif. Lien créé sur stripe.com.')}
         </div></div>`).join('')
     + btn('+ Ajouter un produit', () => {
       D.products.push({ id: uid('p'), name: '', capsule: '', price: 0, description: '', images: [],
@@ -3988,29 +5259,47 @@ function tabLiens() {
 
 function tabAide() {
   return `<h4>Modifier un texte</h4>
-    <div class="ed-note">Clique directement dessus sur la page, à gauche. Les zones modifiables sont
-    entourées de pointillés. Tape, puis clique ailleurs : c’est pris en compte.</div>
+    <div class="ed-note">Un clic direct sur le texte, sur la page. Les zones modifiables sont entourées
+    de pointillés. Il suffit de taper puis de cliquer ailleurs.</div>
+
+    <h4>Déplacer, agrandir, décorer</h4>
+    <div class="ed-note">Au survol d’un texte, une pastille jaune apparaît à sa gauche : elle sert à le
+    déplacer dans n’importe quelle direction, y compris en diagonale. La pastille blanche à droite change
+    sa largeur. Un clic droit sur n’importe quel texte, bouton ou bloc ouvre le menu complet : taille,
+    couleur, lien, rotation, alignement. Sur téléphone, l’appui long remplace le clic droit.</div>
+
+    <h4>Ajouter des boutons et des bandeaux</h4>
+    <div class="ed-note">Clic droit sur un bloc, ou barre flottante en bas de l’écran : bouton, bandeau,
+    texte libre, titre, image, forme, filet, pastille, vidéo intégrée. Chaque élément se pose à la souris,
+    se redimensionne par ses poignées et se règle dans le détail depuis le panneau.</div>
+
     <h4>Enregistrer</h4>
-    <div class="ed-note">Le bouton <b>Enregistrer</b> télécharge une nouvelle version du fichier de ton site.
-    <b>Elle remplace l’ancienne</b> : garde toujours la plus récente. Raccourci : Ctrl+S.</div>
+    <div class="ed-note">Le bouton <b>Enregistrer</b> télécharge une nouvelle version du fichier du site.
+    <b>Elle remplace l’ancienne</b> : c’est toujours la plus récente qui compte. Raccourci : Ctrl+S.</div>
+
     <h4>Mettre en ligne</h4>
-    <div class="ed-note">Va sur <b>app.netlify.com/drop</b> et fais glisser ton fichier dans la page.
-    Tu obtiens une adresse en quelques secondes. À chaque modification, refais un glisser-déposer
-    au même endroit pour mettre à jour.</div>
+    <div class="ed-note">Onglet <b>En ligne</b> : une fois le dépôt renseigné, le bouton Publier met à jour
+    le site pour tout le monde, sans que personne ait à retélécharger quoi que ce soit.</div>
+
     <h4>Ouvrir cet éditeur</h4>
-    <div class="ed-note">Ajoute <b>#edition</b> à la fin de l’adresse, ou appuie sur <b>Ctrl+E</b>.
-    Tes visiteurs ne le voient jamais.</div>
+    <div class="ed-note"><b>Ctrl+E</b>, ou <b>#edition</b> ajouté à la fin de l’adresse. Sur téléphone :
+    trois appuis rapides sur le logo du bas de page. Rien de tout cela n’apparaît côté visiteurs.</div>
+
     <h4>Vendre par carte</h4>
-    <div class="ed-note">Crée un <b>lien de paiement</b> sur stripe.com, colle-le dans la fiche du produit,
-    onglet Boutique. Sans lien, les commandes t’arrivent par e-mail.</div>
-    <h4>Travailler avec quelqu’un</h4>
+    <div class="ed-note">Créer un <b>lien de paiement</b> sur stripe.com et le reporter dans la fiche du
+    produit, onglet Boutique. Sans lien, les commandes arrivent par e-mail.</div>
+
+    <h4>Travailler à plusieurs</h4>
     <div class="ed-note">Onglet <b>Partage</b>. Une seule personne modifie à la fois, et chaque
-    enregistrement inscrit qui a fait quoi. Pour éviter les accidents, échangez plutôt une rubrique
-    seule qu’un site entier.</div>
-    <h4>Attention</h4>
-    <div class="ed-note">Ce fichier <b>contient tout ton site</b>, textes et images comprises. Si tu le perds,
-    tu perds ton travail. Garde une copie de sauvegarde après chaque grosse session.</div>
+    enregistrement inscrit qui a fait quoi. Échanger une rubrique seule reste plus sûr qu’un site entier.</div>
+
+    <h4>Point de vigilance</h4>
+    <div class="ed-note">Ce fichier <b>contient tout le site</b>, textes et images comprises. Le perdre,
+    c’est perdre le travail. Une copie de sauvegarde après chaque grosse session évite l’accident.</div>
+
     <h4>Repartir de zéro</h4>
+    <div class="ed-note">Onglet <b>Pages</b>, en bas : effacer toute la mise en forme, ou vider une page
+    pour la reconstruire.</div>
     ${btn('Recharger la dernière version enregistrée', () => { if (confirm('Les modifications non enregistrées seront perdues. Continuer ?')) location.reload(); }, 'd')}`;
 }
 
@@ -4027,7 +5316,7 @@ function save() {
   const blob = new Blob(['<!DOCTYPE html>\n' + doc], { type: 'text/html' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'vibes-site.html';
+  a.download = 'index.html';
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   setDirty(false);
@@ -4040,17 +5329,20 @@ function render() {
   applyTheme();
   paintChrome();
   renderPage();
+  decorate(currentSlug());
   bindForms();
   bindInline();
   paintCart();
   document.body.classList.toggle('ed-live', EDIT);
   enhance();
+  bindLayout();
 }
 
 /* ── démarrage ────────────────────────────────────────────── */
 function reallyEnterEdit() {
+  mountEd();
   EDIT = true;
-  $('#edFab').style.display = 'flex';
+  const fab = $('#edFab'); if (fab) fab.style.display = 'flex';
   render(); openPanel();
   const st = $('#edVersion'); if (st) st.textContent = frStamp();
 }
@@ -4077,6 +5369,7 @@ let CURRENT_EDITOR = null;
 let gateTries = 0, gateLockedUntil = 0;
 
 function enterEdit() {
+  mountEd();
   const list = (D.editors || []).filter(e => e.active);
   if (!list.length) return reallyEnterEdit();
   if (CURRENT_EDITOR) return reallyEnterEdit();
@@ -4088,8 +5381,8 @@ function openGate(list) {
   g.style.display = 'grid';
   g.innerHTML = `<div class="bx">
     <h3>Espace éditeur</h3>
-    <p>Choisis ton nom, puis entre ton code d’accès.</p>
-    <div class="ed-f"><label>Qui es-tu ?</label>
+    <p>Sélectionner un nom, puis saisir le code d’accès.</p>
+    <div class="ed-f"><label>Nom de l’éditeur</label>
       <select id="gateWho">${list.map(e =>
         `<option value="${esc(e.id)}">${esc(e.name)}${e.role === 'principal' ? ' (principal)' : ''}</option>`).join('')}</select></div>
     <div class="ed-f"><label>Code d’accès</label>
@@ -4100,7 +5393,7 @@ function openGate(list) {
     <p style="font-size:.72rem;margin:14px 0 0"><a href="#" id="gateLost"
       style="color:#a8a6a1;text-decoration:underline">Code d’accès perdu ?</a></p>
     <p style="font-size:.68rem;color:#75736e;margin:8px 0 0;line-height:1.5">
-      Ton nom sera inscrit à chaque enregistrement.</p>
+      Le nom choisi sera inscrit à chaque enregistrement.</p>
   </div>`;
 
   const msg = $('#gateMsg'), input = $('#gateCode');
@@ -4109,7 +5402,7 @@ function openGate(list) {
   const submit = async () => {
     const now = Date.now();
     if (now < gateLockedUntil) {
-      msg.textContent = `Trop d’essais. Réessaie dans ${Math.ceil((gateLockedUntil - now) / 1000)} secondes.`;
+      msg.textContent = `Trop d’essais. Nouvel essai possible dans ${Math.ceil((gateLockedUntil - now) / 1000)} secondes.`;
       return;
     }
     const who = (D.editors || []).find(e => e.id === $('#gateWho').value);
@@ -4117,7 +5410,7 @@ function openGate(list) {
     const h = await hashCode(who.salt, input.value.trim());
     if (h !== who.hash) {
       gateTries++;
-      if (gateTries >= 5) { gateLockedUntil = Date.now() + 60000; gateTries = 0; msg.textContent = 'Trop d’essais. Attends une minute.'; }
+      if (gateTries >= 5) { gateLockedUntil = Date.now() + 60000; gateTries = 0; msg.textContent = 'Trop d’essais. Nouvel essai possible dans une minute.'; }
       else msg.textContent = `Code incorrect. ${5 - gateTries} essai${5 - gateTries > 1 ? 's' : ''} restant${5 - gateTries > 1 ? 's' : ''}.`;
       input.select();
       return;
@@ -4141,9 +5434,9 @@ function openRecovery(list) {
   const g = $('#edGate');
   g.innerHTML = `<div class="bx">
     <h3>Code d’accès perdu</h3>
-    <p>Utilise le code de secours à seize caractères qui t’a été remis. Il ne sert qu’une fois :
-    un nouveau te sera donné juste après.</p>
-    <div class="ed-f"><label>Qui es-tu ?</label>
+    <p>Saisir le code de secours à seize caractères remis à l’ouverture du compte. Il ne sert qu’une
+    fois : un nouveau code de secours est délivré aussitôt après.</p>
+    <div class="ed-f"><label>Nom de l’éditeur</label>
       <select id="recWho">${list.map(e => `<option value="${esc(e.id)}">${esc(e.name)}</option>`).join('')}</select></div>
     <div class="ed-f"><label>Code de secours</label>
       <input id="recCode" autocomplete="off" placeholder="XXXX-XXXX-XXXX-XXXX"></div>
@@ -4160,7 +5453,7 @@ function openRecovery(list) {
     const msg = $('#recMsg');
     const given = $('#recCode').value.trim().toUpperCase();
     const neuf = $('#recNew').value.trim();
-    if (!who || !who.recHash) { msg.textContent = 'Aucun code de secours n’est enregistré pour ce compte. Demande à l’éditeur principal de t’en attribuer un nouveau.'; return; }
+    if (!who || !who.recHash) { msg.textContent = 'Aucun code de secours n’est enregistré pour ce compte. L’éditeur principal peut en attribuer un nouveau.'; return; }
     if (neuf.length < 6) { msg.textContent = 'Le nouveau code doit faire au moins six caractères.'; return; }
     const h = await hashCode(who.recSalt, given);
     if (h !== who.recHash) { msg.textContent = 'Code de secours incorrect.'; return; }
@@ -4193,7 +5486,7 @@ function signOut() {
   CURRENT_EDITOR = null; EDITOR_NAME = '';
   EDIT = false; closePanel();
   document.body.classList.remove('ed-live');
-  $('#edFab').style.display = 'none';
+  const fab0 = $('#edFab'); if (fab0) fab0.style.display = 'none';
   render();
   toast('Déconnecté.');
 }
@@ -4211,13 +5504,6 @@ document.addEventListener('keydown', e => {
 $('#burger').onclick = () => document.body.classList.toggle('nav-open');
 $('#cartBtn').onclick = () => document.body.dataset.cart = '1';
 $('#cartClose').onclick = $('#cartScrim').onclick = () => document.body.dataset.cart = '0';
-$('#edClose').onclick = closePanel;
-$('#edFab').onclick = openPanel;
-$('#edSave').onclick = () => (syncOn() ? saveOnline() : save());
-setInterval(() => {
-  const b = $('#edSave');
-  if (b) b.textContent = syncOn() ? 'Publier' : 'Enregistrer';
-}, 1200);
 
 
 /* ════════════════════════════════════════════════════════════
@@ -4308,7 +5594,7 @@ function applyImport(keys) {
   PENDING_IMPORT = null;
   setDirty(true);
   render(); paintPanel();
-  toast('Import appliqué. Vérifie, puis enregistre.');
+  toast('Import appliqué. Relecture puis enregistrement.');
 }
 
 function tabPartage() {
@@ -4321,20 +5607,20 @@ function tabPartage() {
     if (imp.kind === 'part') {
       return `<div class="ed-note">Fichier reçu : rubrique <b>${esc(imp.label)}</b><br>
         Version ${imp.version || '?'}${imp.editor ? `, par ${esc(imp.editor)}` : ''}, le ${dt}.<br>
-        Ton fichier actuel : ${esc(frStamp())}.</div>
-        ${older ? `<div class="ed-note"><b>Attention.</b> Ce fichier vient d’une version plus ancienne que la tienne.
-          Si ton ami travaillait sur une copie dépassée, tu vas perdre ce que tu as fait depuis dans cette rubrique.</div>` : ''}
-        <div class="ed-row">${btn('Remplacer ma rubrique « ' + imp.label + ' »', () => applyImport([imp.key]), 'p')}
+        Fichier ouvert ici : ${esc(frStamp())}.</div>
+        ${older ? `<div class="ed-note"><b>Attention.</b> Ce fichier vient d’une version plus ancienne que celle-ci.
+          S’il a été modifié à partir d’une copie dépassée, le travail fait depuis dans cette rubrique sera perdu.</div>` : ''}
+        <div class="ed-row">${btn('Remplacer la rubrique « ' + imp.label + ' »', () => applyImport([imp.key]), 'p')}
         ${btn('Annuler', () => { PENDING_IMPORT = null; paintPanel(); })}</div>`;
     }
     return `<div class="ed-note">Site complet reçu.<br>
       Version ${imp.version}${imp.editor ? `, par ${esc(imp.editor)}` : ''}, le ${dt}.<br>
-      Ton fichier actuel : ${esc(frStamp())}.</div>
-      ${older ? `<div class="ed-note"><b>Attention.</b> Le fichier reçu est plus ancien que le tien.</div>` : ''}
-      <h4>Que veux-tu reprendre ?</h4>
+      Fichier ouvert ici : ${esc(frStamp())}.</div>
+      ${older ? `<div class="ed-note"><b>Attention.</b> Le fichier reçu est plus ancien que celui-ci.</div>` : ''}
+      <h4>Rubriques à reprendre</h4>
       ${Object.entries(PARTS).map(([k, v]) => btn(v.label, () => applyImport([k]), 'sm')).join(' ')}
       <div style="margin-top:14px">${btn('Tout remplacer', () => {
-        if (confirm('Remplacer l’intégralité de ton site par le fichier reçu ?')) applyImport(Object.keys(PARTS));
+        if (confirm('Remplacer l’intégralité du site par le fichier reçu ?')) applyImport(Object.keys(PARTS));
       }, 'd')}
       ${btn('Annuler', () => { PENDING_IMPORT = null; paintPanel(); })}</div>`;
   }
@@ -4350,14 +5636,14 @@ function tabPartage() {
     <div class="ed-note">Une seule personne modifie le fichier à la fois. Celui qui édite prévient l’autre,
     enregistre, puis repartage le fichier. Sans ça, le dernier qui enregistre écrase le travail du premier.</div>
 
-    <h4>Envoyer une rubrique à ton ami</h4>
-    <div class="ed-note">Plus sûr que d’échanger tout le site : il ne recevra que cette partie,
-    et le reste de ton travail ne risque rien.</div>
+    <h4>Envoyer une rubrique</h4>
+    <div class="ed-note">Plus sûr que d’échanger tout le site : le destinataire ne reçoit que cette partie,
+    et le reste du travail ne risque rien.</div>
     ${Object.entries(PARTS).map(([k, v]) => btn(v.label, () => exportPart(k), 'sm')).join(' ')}
 
     <h4>Recevoir un fichier</h4>
-    <div class="ed-note">Accepte une rubrique (.json) ou un site complet (.html). Je te dirai d’où il vient
-    et ce qu’il va remplacer avant d’appliquer quoi que ce soit.</div>
+    <div class="ed-note">Une rubrique (.json) ou un site complet (.html). L’origine du fichier et ce qu’il
+    va remplacer sont affichés avant toute application.</div>
     ${btn('Choisir un fichier reçu', () => {
       const inp = document.createElement('input');
       inp.type = 'file'; inp.accept = '.json,.html';
@@ -4367,7 +5653,7 @@ function tabPartage() {
 
     <h4>Sauvegarde du fichier</h4>
     <div class="ed-note">${syncOn()
-      ? 'Le site est branché en ligne : le bouton Publier suffit. Télécharge quand même le fichier de temps en temps, c’est ta copie de secours.'
+      ? 'Le site est branché en ligne : le bouton Publier suffit. Un téléchargement du fichier de temps en temps reste une bonne copie de secours.'
       : 'Le contenu vit dans le fichier. Chaque enregistrement télécharge une nouvelle version qui remplace l’ancienne.'}</div>
     ${btn('Télécharger le fichier', () => save())}
 
@@ -4420,7 +5706,7 @@ async function askNewRecovery(e) {
   setDirty(true);
   paintPanel();
   alert(`Nouveau code de secours pour ${e.name}, à lui transmettre et à conserver :\n\n${c}\n\n` +
-    `Il ne sera plus jamais affiché. Pense à ${syncOn() ? 'publier' : 'enregistrer le fichier'}.`);
+    `Il ne sera plus jamais affiché. Reste à ${syncOn() ? 'publier' : 'enregistrer le fichier'}.`);
 }
 
 async function askNewCode(e) {
@@ -4446,7 +5732,7 @@ async function addEditor() {
     hash: await hashCode(salt, code.trim()), active: true });
   setDirty(true);
   paintPanel();
-  alert(`${name.trim()} peut maintenant entrer avec le code :\n\n${code.trim()}\n\nN’oublie pas d’enregistrer le site.`);
+  alert(`${name.trim()} peut maintenant entrer avec le code :\n\n${code.trim()}\n\nLe site reste à enregistrer.`);
 }
 
 /* ── démarrage, une fois tout le code défini ──────────────── */
